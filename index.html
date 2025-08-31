@@ -1,0 +1,3333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Games Indie BR - Onde o talento brasileiro ganha XP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-purple': '#8B5CF6',
+                        'neon-blue': '#06B6D4',
+                        'neon-green': '#10B981',
+                        'dark-bg': '#0F0F23',
+                        'card-bg': '#1A1A2E'
+                    },
+                    fontFamily: {
+                        'pixel': ['Courier New', 'monospace'],
+                        'orbitron': ['Orbitron', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        /* ===========================================
+           ESTILOS GERAIS E ANIMAÇÕES
+        =========================================== */
+        .pixel-border {
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #8B5CF6, #06B6D4) 1;
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.7);
+            transform: translateY(-2px);
+        }
+        
+        .retro-text {
+            font-family: 'Orbitron', monospace;
+            text-shadow: 2px 2px 0px rgba(139, 92, 246, 0.5);
+        }
+        
+        .neon-text {
+            color: #06B6D4;
+            text-shadow: 0 0 10px #06B6D4;
+        }
+        
+        /* ===========================================
+           ESTILOS DOS MODAIS
+        =========================================== */
+        .modal-overlay {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            border: 3px solid #8B5CF6;
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.3);
+        }
+        
+        .tab-active {
+            background: linear-gradient(45deg, #8B5CF6, #06B6D4);
+            color: white;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+        
+        .tab-inactive {
+            background: #374151;
+            color: #9CA3AF;
+        }
+        
+        /* ===========================================
+           ESTILOS DOS FORMULÁRIOS
+        =========================================== */
+        .pixel-input {
+            background: #0F0F23;
+            border: 2px solid #374151;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .pixel-input:focus {
+            border-color: #06B6D4;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            outline: none;
+        }
+        
+        .pixel-input.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .pixel-button {
+            background: linear-gradient(45deg, #8B5CF6, #06B6D4);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .pixel-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+        }
+        
+        .pixel-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* ===========================================
+           BARRA DE PERFIL
+        =========================================== */
+        .profile-bar {
+            background: linear-gradient(90deg, #1A1A2E, #16213E);
+            border-bottom: 2px solid #8B5CF6;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .avatar-pixel {
+            background: linear-gradient(45deg, #8B5CF6, #06B6D4);
+            border: 2px solid #06B6D4;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        
+        /* ===========================================
+           NOTIFICAÇÕES E MENSAGENS
+        =========================================== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notification.success {
+            background: linear-gradient(45deg, #10B981, #059669);
+            border: 2px solid #065F46;
+        }
+        
+        .notification.error {
+            background: linear-gradient(45deg, #EF4444, #DC2626);
+            border: 2px solid #991B1B;
+        }
+        
+        /* ===========================================
+           NEWSLETTER E FORMULÁRIOS
+        =========================================== */
+        .newsletter-box {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            border: 2px solid #10B981;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+        }
+        
+        .checkbox-pixel {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #06B6D4;
+            background: #0F0F23;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .checkbox-pixel:checked {
+            background: #06B6D4;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        
+        .checkbox-pixel:checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        /* ===========================================
+           ANIMAÇÕES ESPECIAIS
+        =========================================== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ===========================================
+           RESPONSIVIDADE
+        =========================================== */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 20px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-white font-pixel">
+    <!-- ===========================================
+         BARRA DE PERFIL (APARECE APÓS LOGIN)
+    =========================================== -->
+    <div id="profile-bar" class="profile-bar hidden">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="avatar-pixel rounded-full">
+                    <span>🎮</span>
+                </div>
+                <div>
+                    <span class="text-sm text-gray-300">Bem-vindo,</span>
+                    <span id="user-name" class="font-bold text-neon-blue ml-1"></span>
+                </div>
+                <button id="admin-panel-btn" class="hidden bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm font-bold transition-colors">
+                    ⚙️ Painel Admin
+                </button>
+            </div>
+            <button id="logout-btn" class="text-sm hover:text-neon-blue transition-colors">
+                🚪 Sair
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-card-bg border-b-2 border-neon-purple sticky top-0 z-40">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🎮</span>
+                    <h1 class="text-2xl font-bold retro-text neon-text">Portal de Games Indie BR</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#home" class="nav-link hover:text-neon-blue transition-colors">🏠 Início</a>
+                    <a href="#catalog" class="nav-link hover:text-neon-blue transition-colors">🎯 Catálogo</a>
+                    <a href="#voting" class="nav-link hover:text-neon-blue transition-colors">🗳️ Votações</a>
+                    <a href="#community-games" class="nav-link hover:text-neon-blue transition-colors">🎮 Jogos de Vocês</a>
+                    <a href="#submit" class="nav-link hover:text-neon-blue transition-colors">📤 Enviar</a>
+                    <button id="login-btn" class="pixel-button px-4 py-2 rounded text-sm font-bold">
+                        👤 Entrar
+                    </button>
+                </div>
+                <button id="mobile-menu" class="md:hidden text-2xl hover:text-neon-blue transition-colors">☰</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-nav" class="hidden md:hidden bg-card-bg border-b-2 border-neon-purple transform transition-all duration-300">
+        <div class="container mx-auto px-4 py-4 space-y-2">
+            <a href="#home" class="nav-link block hover:text-neon-blue transition-colors py-2">🏠 Início</a>
+            <a href="#catalog" class="nav-link block hover:text-neon-blue transition-colors py-2">🎯 Catálogo</a>
+            <a href="#voting" class="nav-link block hover:text-neon-blue transition-colors py-2">🗳️ Votações</a>
+            <a href="#community-games" class="nav-link block hover:text-neon-blue transition-colors py-2">🎮 Jogos de Vocês</a>
+            <a href="#submit" class="nav-link block hover:text-neon-blue transition-colors py-2">📤 Enviar</a>
+            <button id="mobile-login-btn" class="pixel-button px-4 py-2 rounded text-sm font-bold mt-2">
+                👤 Entrar
+            </button>
+        </div>
+    </div>
+
+    <!-- ===========================================
+         MODAL DE LOGIN/CADASTRO
+    =========================================== -->
+    <div id="auth-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="modal-content rounded-lg p-8 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold retro-text neon-text">🎮 Portal Indie BR</h2>
+                <button id="close-auth-modal" class="text-2xl hover:text-neon-blue transition-colors">✕</button>
+            </div>
+            
+            <!-- Abas -->
+            <div class="flex mb-6 bg-gray-800 rounded-lg p-1">
+                <button id="login-tab" class="tab-active flex-1 py-2 px-4 rounded font-bold text-sm transition-all">
+                    🔑 Entrar
+                </button>
+                <button id="register-tab" class="tab-inactive flex-1 py-2 px-4 rounded font-bold text-sm transition-all">
+                    📝 Cadastrar
+                </button>
+            </div>
+            
+            <!-- Formulário de Login -->
+            <div id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">📧 E-mail</label>
+                    <input type="email" id="login-email" class="pixel-input w-full px-4 py-2 rounded" placeholder="seu@email.com" required>
+                    <span class="error-message text-red-400 text-xs hidden">E-mail inválido</span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold mb-2">🔒 Senha</label>
+                    <input type="password" id="login-password" class="pixel-input w-full px-4 py-2 rounded" placeholder="••••••••" required>
+                    <span class="error-message text-red-400 text-xs hidden">Senha deve ter pelo menos 6 caracteres</span>
+                </div>
+                
+                <button id="login-submit" class="pixel-button w-full py-3 rounded font-bold">
+                    🚀 Entrar no Portal
+                </button>
+                
+                <p class="text-center text-sm text-gray-400">
+                    Não tem conta? <button id="switch-to-register" class="text-neon-blue hover:underline">Cadastre-se aqui!</button>
+                </p>
+            </div>
+            
+            <!-- Formulário de Cadastro -->
+            <div id="register-form" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-bold mb-2">👤 Nome Gamer</label>
+                    <input type="text" id="register-name" class="pixel-input w-full px-4 py-2 rounded" placeholder="Seu nome de gamer" required>
+                    <span class="error-message text-red-400 text-xs hidden">Nome deve ter pelo menos 2 caracteres</span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold mb-2">📧 E-mail</label>
+                    <input type="email" id="register-email" class="pixel-input w-full px-4 py-2 rounded" placeholder="seu@email.com" required>
+                    <span class="error-message text-red-400 text-xs hidden">E-mail inválido</span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold mb-2">🔒 Senha</label>
+                    <input type="password" id="register-password" class="pixel-input w-full px-4 py-2 rounded" placeholder="••••••••" required>
+                    <span class="error-message text-red-400 text-xs hidden">Senha deve ter pelo menos 6 caracteres</span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold mb-2">🔒 Confirmar Senha</label>
+                    <input type="password" id="register-confirm" class="pixel-input w-full px-4 py-2 rounded" placeholder="••••••••" required>
+                    <span class="error-message text-red-400 text-xs hidden">Senhas não coincidem</span>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="newsletter-consent" class="checkbox-pixel">
+                    <label for="newsletter-consent" class="text-sm">
+                        📬 Quero receber novidades e lançamentos por e-mail
+                    </label>
+                </div>
+                
+                <button id="register-submit" class="pixel-button w-full py-3 rounded font-bold">
+                    🎉 Criar Conta
+                </button>
+                
+                <p class="text-center text-sm text-gray-400">
+                    Já tem conta? <button id="switch-to-login" class="text-neon-blue hover:underline">Entre aqui!</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================================
+         MODAL DO PAINEL ADMINISTRATIVO
+    =========================================== -->
+    <div id="admin-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="modal-content rounded-lg p-8 w-full max-w-6xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold retro-text text-red-400">⚙️ Painel Administrativo</h2>
+                <button id="close-admin-modal" class="text-2xl hover:text-neon-blue transition-colors">✕</button>
+            </div>
+            
+            <!-- Abas do Admin -->
+            <div class="flex mb-6 bg-gray-800 rounded-lg p-1 overflow-x-auto">
+                <button id="submissions-tab" class="tab-active flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all">
+                    📤 Jogos Enviados
+                </button>
+                <button id="users-tab" class="tab-inactive flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all">
+                    👥 Usuários
+                </button>
+                <button id="newsletter-tab" class="tab-inactive flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all">
+                    📬 Newsletter
+                </button>
+                <button id="games-tab" class="tab-inactive flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all">
+                    🎮 Gerenciar Jogos
+                </button>
+                <button id="voting-tab" class="tab-inactive flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all">
+                    🗳️ Votações
+                </button>
+                <button id="stats-tab" class="tab-inactive flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all">
+                    📊 Estatísticas
+                </button>
+            </div>
+            
+            <!-- Conteúdo das Abas -->
+            <div id="admin-content">
+                <!-- Conteúdo será carregado dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================================
+         MODAL DE VÍDEO PARA VOTAÇÃO
+    =========================================== -->
+    <div id="video-modal" class="fixed inset-0 modal-overlay hidden z-60 flex items-center justify-center">
+        <div class="modal-content rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold retro-text text-blue-400">🎥 Criar Votação</h3>
+                <button id="close-video-modal" class="text-2xl hover:text-neon-blue transition-colors">✕</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">🎮 Jogo:</label>
+                    <p id="video-game-name" class="text-neon-blue font-bold"></p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold mb-2">🎥 URL do Vídeo (YouTube, Vimeo, etc.) *</label>
+                    <input type="url" id="video-url" class="pixel-input w-full px-4 py-2 rounded" placeholder="https://youtube.com/watch?v=..." required>
+                    <small class="text-gray-400 text-xs">Cole o link do vídeo de gameplay ou trailer do jogo</small>
+                </div>
+                
+                <div class="bg-blue-900 p-4 rounded border border-blue-600">
+                    <h4 class="font-bold text-blue-300 mb-2">ℹ️ Como funciona a votação:</h4>
+                    <ul class="text-xs text-gray-300 space-y-1">
+                        <li>• A votação durará exatamente 7 dias</li>
+                        <li>• Usuários logados poderão votar uma vez</li>
+                        <li>• O jogo aparecerá na seção "Votações"</li>
+                        <li>• Você pode finalizar antes dos 7 dias se quiser</li>
+                        <li>• Jogos aprovados vão para "Jogos de Vocês"</li>
+                    </ul>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button id="create-voting" class="pixel-button flex-1 py-3 rounded font-bold">
+                        🗳️ Criar Votação
+                    </button>
+                    <button id="cancel-video-modal" class="bg-gray-600 hover:bg-gray-700 flex-1 py-3 rounded font-bold">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================================
+         MODAL DE BOAS-VINDAS
+    =========================================== -->
+    <div id="welcome-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="modal-content rounded-lg p-8 w-full max-w-md mx-4 text-center">
+            <div class="floating mb-4">
+                <span class="text-6xl">🎉</span>
+            </div>
+            <h2 class="text-2xl font-bold retro-text neon-text mb-4">
+                Bem-vindo ao Portal Indie BR!
+            </h2>
+            <p class="text-lg mb-2">
+                Olá, <span id="welcome-user-name" class="text-neon-blue font-bold"></span>!
+            </p>
+            <p class="text-gray-300 mb-6">
+                🚀 Prepare-se para ganhar XP explorando os melhores jogos indies brasileiros!
+            </p>
+            <div class="space-y-2 text-sm text-gray-400 mb-6">
+                <p>✨ Descubra jogos incríveis</p>
+                <p>🎯 Vote nos seus favoritos</p>
+                <p>👨‍💻 Conheça desenvolvedores</p>
+                <p>📰 Fique por dentro das novidades</p>
+            </div>
+            <button id="close-welcome" class="pixel-button px-6 py-3 rounded font-bold">
+                🎮 Vamos Começar!
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="py-20 bg-gradient-to-br from-dark-bg via-purple-900 to-blue-900">
+        <div class="container mx-auto px-4 text-center">
+            <div class="floating mb-8">
+                <span class="text-8xl">🎮</span>
+            </div>
+            <h2 class="text-5xl md:text-7xl font-bold retro-text mb-6">
+                Portal de Games <span class="neon-text">Indie BR</span>
+            </h2>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300">
+                🚀 Onde o talento brasileiro ganha XP! 🇧🇷
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <button id="explore-btn" class="pixel-button px-8 py-4 rounded-lg text-lg font-bold hover-glow transition-all duration-300">
+                    🎯 Explorar Jogos
+                </button>
+                <button id="submit-btn" class="pixel-button px-8 py-4 rounded-lg text-lg font-bold hover-glow transition-all duration-300">
+                    📤 Envie seu Jogo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-12 bg-dark-bg">
+        <div class="container mx-auto px-4">
+            <div class="newsletter-box rounded-lg p-6 max-w-2xl mx-auto text-center">
+                <h3 class="text-2xl font-bold retro-text mb-4">
+                    📬 Newsletter Indie BR
+                </h3>
+                <p class="text-gray-300 mb-6">
+                    Receba as últimas novidades, lançamentos e reviews dos melhores jogos indies brasileiros!
+                </p>
+                <form id="newsletter-form" class="flex flex-col md:flex-row gap-4">
+                    <input type="email" id="newsletter-email" class="pixel-input flex-1 px-4 py-3 rounded" placeholder="seu@email.com" required>
+                    <button type="submit" class="pixel-button px-6 py-3 rounded font-bold whitespace-nowrap">
+                        🚀 Assinar Newsletter
+                    </button>
+                </form>
+                <p class="text-xs text-gray-400 mt-3">
+                    📧 Enviamos apenas conteúdo relevante. Sem spam, prometido!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Games -->
+    <section class="py-16 bg-dark-bg">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold retro-text mb-8 text-center">
+                ⭐ Jogos da Semana ⭐
+            </h3>
+            <div id="featured-games" class="grid md:grid-cols-3 gap-6">
+                <!-- Featured games will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Catalog -->
+    <section id="catalog" class="py-16 bg-gradient-to-br from-card-bg to-dark-bg">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold retro-text mb-8 text-center">
+                🎯 Catálogo de Jogos
+            </h3>
+            
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button class="filter-btn bg-neon-purple px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors" data-filter="all">
+                    🎮 Todos
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="adventure">
+                    🏰 Aventura
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="platform">
+                    🏃 Plataforma
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="action">
+                    💥 Ação
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="puzzle">
+                    🧩 Puzzle
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="rpg">
+                    ⚔️ RPG
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="strategy">
+                    🧠 Estratégia
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="racing">
+                    🏎️ Corrida
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="simulation">
+                    🏗️ Simulação
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="horror">
+                    👻 Terror
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="casual">
+                    🎲 Casual
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="sports">
+                    ⚽ Esportes
+                </button>
+                <button class="filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors" data-filter="educational">
+                    📚 Educativo
+                </button>
+            </div>
+            
+            <div id="games-grid" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Games will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Voting Section -->
+    <section id="voting" class="py-16 bg-gradient-to-br from-blue-900 to-purple-900">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold retro-text mb-8 text-center">
+                🗳️ Votações Ativas
+            </h3>
+            <p class="text-xl mb-8 text-gray-300 text-center">
+                Vote nos jogos da comunidade! Sua opinião decide quais jogos entram no catálogo! 🎮
+            </p>
+            <div id="voting-games" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Voting games will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Games -->
+    <section id="community-games" class="py-16 bg-dark-bg">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold retro-text mb-8 text-center">
+                🎮 Jogos de Vocês
+            </h3>
+            <p class="text-xl mb-8 text-gray-300 text-center">
+                Jogos aprovados pela comunidade brasileira! 🇧🇷
+            </p>
+            <div id="community-games-grid" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Community games will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Random Discovery -->
+    <section class="py-16 bg-gradient-to-br from-purple-900 to-blue-900">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-3xl font-bold retro-text mb-8">
+                🎲 Modo Descoberta Aleatória
+            </h3>
+            <p class="text-xl mb-8 text-gray-300">
+                Não sabe o que jogar? Deixe a sorte decidir! 🍀
+            </p>
+            <div id="random-game" class="max-w-md mx-auto bg-card-bg p-6 rounded-lg mb-8 border-2 border-gray-600">
+                <div class="bg-gradient-to-br from-yellow-600 to-red-600 h-40 rounded-lg mb-4 flex items-center justify-center">
+                    <span class="text-4xl">🎮</span>
+                </div>
+                <h4 class="text-xl font-bold mb-2">Clique no botão abaixo!</h4>
+                <p class="text-gray-400">Descubra um jogo indie brasileiro aleatório</p>
+            </div>
+            <button id="random-btn" class="pixel-button px-8 py-4 rounded-lg text-lg font-bold hover-glow transition-all duration-300">
+                🎲 Descobrir Jogo Aleatório
+            </button>
+        </div>
+    </section>
+
+    <!-- Submit Game Section -->
+    <section id="submit" class="py-16 bg-dark-bg">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold retro-text mb-8 text-center">
+                📤 Envie Seu Jogo
+            </h3>
+            
+            <!-- Área de Login Necessário -->
+            <div id="submit-login-required" class="max-w-2xl mx-auto bg-card-bg p-8 rounded-lg border-2 border-yellow-600 text-center">
+                <div class="text-6xl mb-4">🔒</div>
+                <h4 class="text-2xl font-bold retro-text mb-4 text-yellow-400">Login Necessário</h4>
+                <p class="text-gray-300 mb-6">
+                    Para enviar seu jogo e participar da comunidade, você precisa estar logado!
+                </p>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-400">
+                        ✅ Acompanhe o status do seu jogo<br>
+                        ✅ Receba notificações sobre aprovação<br>
+                        ✅ Participe das votações da comunidade<br>
+                        ✅ Conecte-se com outros desenvolvedores
+                    </p>
+                    <button onclick="authSystem.openAuthModal()" class="pixel-button px-8 py-4 rounded-lg text-lg font-bold">
+                        👤 Fazer Login / Cadastrar
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Formulário de Envio (só aparece logado) -->
+            <div id="submit-form-container" class="max-w-2xl mx-auto bg-card-bg p-8 rounded-lg border-2 border-gray-600 hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <p class="text-neon-blue font-bold">
+                            🎮 Olá, <span id="submit-user-name"></span>!
+                        </p>
+                        <p class="text-gray-400 text-sm">Pronto para mostrar seu talento?</p>
+                    </div>
+                    <div class="text-right text-xs text-gray-400">
+                        <p>✨ Pronto para enviar seu jogo!</p>
+                    </div>
+                </div>
+                <form id="submit-form" class="space-y-6">
+                    <!-- Dados do usuário logado (ocultos) -->
+                    <input type="hidden" id="submit-user-id" name="user_id">
+                    <input type="hidden" id="submit-logged-email" name="user_email">
+                    <input type="hidden" id="submit-logged-name" name="user_name">
+                    
+                    <div>
+                        <label class="block text-sm font-bold mb-2">🎮 Nome do Jogo *</label>
+                        <input type="text" id="game-name" class="pixel-input w-full px-4 py-2 rounded" placeholder="Digite o nome do seu jogo" required>
+                        <span class="error-message text-red-400 text-sm hidden">Este campo é obrigatório</span>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold mb-2">📝 Descrição *</label>
+                        <textarea id="game-description" class="pixel-input w-full px-4 py-2 h-24 rounded" placeholder="Conte sobre seu jogo..." required></textarea>
+                        <span class="error-message text-red-400 text-sm hidden">Este campo é obrigatório</span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">🎯 Gênero *</label>
+                            <select id="game-genre" class="pixel-input w-full px-4 py-2 rounded" required>
+                                <option value="">Selecione um gênero</option>
+                                <option value="adventure">🏰 Aventura</option>
+                                <option value="platform">🏃 Plataforma</option>
+                                <option value="action">💥 Ação</option>
+                                <option value="puzzle">🧩 Puzzle</option>
+                                <option value="rpg">⚔️ RPG</option>
+                                <option value="strategy">🧠 Estratégia</option>
+                                <option value="racing">🏎️ Corrida</option>
+                                <option value="simulation">🏗️ Simulação</option>
+                                <option value="horror">👻 Terror</option>
+                                <option value="casual">🎲 Casual</option>
+                                <option value="sports">⚽ Esportes</option>
+                                <option value="educational">📚 Educativo</option>
+                            </select>
+                            <span class="error-message text-red-400 text-sm hidden">Selecione um gênero</span>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold mb-2">🕹️ Plataforma *</label>
+                            <select id="game-platform" class="pixel-input w-full px-4 py-2 rounded" required>
+                                <option value="">Selecione uma plataforma</option>
+                                <option value="PC (Windows)">PC (Windows)</option>
+                                <option value="PC (Linux)">PC (Linux)</option>
+                                <option value="Mac">Mac</option>
+                                <option value="Android">Android</option>
+                                <option value="iOS">iOS</option>
+                                <option value="Web Browser">Web Browser</option>
+                                <option value="PlayStation">PlayStation</option>
+                                <option value="Xbox">Xbox</option>
+                                <option value="Nintendo Switch">Nintendo Switch</option>
+                                <option value="Múltiplas Plataformas">Múltiplas Plataformas</option>
+                            </select>
+                            <span class="error-message text-red-400 text-sm hidden">Selecione uma plataforma</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold mb-2">🔗 Link do Jogo *</label>
+                        <input type="url" id="game-link" class="pixel-input w-full px-4 py-2 rounded" placeholder="https://..." required>
+                        <span class="error-message text-red-400 text-sm hidden">Digite um link válido</span>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold mb-2">🖼️ Capa do Jogo</label>
+                        <div class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-neon-blue transition-colors">
+                            <input type="file" name="🖼️ Capa do Jogo" id="game-cover" class="hidden" accept="image/*" onchange="gamePortal.handleCoverUpload(this)">
+                            <div id="cover-upload-area" class="cursor-pointer" onclick="document.getElementById('game-cover').click()">
+                                <div class="text-4xl mb-2">📸</div>
+                                <p class="text-gray-300 mb-2">Clique para enviar a capa do seu jogo</p>
+                                <p class="text-xs text-gray-400">PNG, JPG ou GIF até 5MB</p>
+                            </div>
+                            <div id="cover-preview" class="hidden">
+                                <img id="cover-image" class="max-w-full h-32 object-cover rounded mx-auto mb-2" alt="Preview da capa">
+                                <p id="cover-filename" class="text-sm text-neon-blue mb-2"></p>
+                                <button type="button" onclick="gamePortal.removeCover()" class="text-red-400 hover:text-red-300 text-xs">
+                                    🗑️ Remover Capa
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-gray-400 text-xs mt-1">Opcional - Uma boa capa ajuda a destacar seu jogo!</small>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold mb-2">🧑‍💻 Nome do Desenvolvedor/Estúdio *</label>
+                        <input type="text" id="developer-name" class="pixel-input w-full px-4 py-2 rounded" placeholder="Seu nome ou nome do estúdio" required>
+                        <span class="error-message text-red-400 text-sm hidden">Este campo é obrigatório</span>
+                        <small class="text-gray-400 text-xs">Como você quer ser creditado no jogo</small>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold mb-2">📱 Redes Sociais</label>
+                        <input type="text" id="social-media" class="pixel-input w-full px-4 py-2 rounded" placeholder="Twitter, Instagram, Discord, etc.">
+                        <small class="text-gray-400 text-xs">Opcional - Nos ajuda a divulgar seu jogo!</small>
+                    </div>
+                    
+                    <div class="bg-card-bg p-4 rounded-lg border-2 border-neon-green">
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" id="publish-consent" class="checkbox-pixel mt-1" required>
+                            <label for="publish-consent" class="text-sm">
+                                <span class="font-bold text-neon-green">✅ Autorização para Publicação *</span><br>
+                                <span class="text-gray-300">Autorizo o Portal de Games Indie BR a publicar meu jogo no catálogo, incluindo nome, descrição, imagens e links fornecidos. Entendo que posso solicitar a remoção a qualquer momento.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-900 p-4 rounded-lg border border-blue-600">
+                        <h4 class="font-bold text-blue-300 mb-2">ℹ️ Como funciona o processo:</h4>
+                        <ul class="text-xs text-gray-300 space-y-1">
+                            <li>• Seu jogo será analisado pela nossa equipe</li>
+                            <li>• Pode ser aprovado diretamente ou colocado em votação</li>
+                            <li>• A comunidade vota por 7 dias se for para votação</li>
+                            <li>• Jogos aprovados aparecem em "Jogos de Vocês"</li>
+                            <li>• Você será notificado sobre o status por e-mail</li>
+                        </ul>
+                    </div>
+                    
+                    <button type="submit" class="pixel-button w-full py-4 rounded text-lg font-bold hover-glow transition-all duration-300">
+                        🚀 Enviar Jogo para Análise
+                    </button>
+                    
+                    <p class="text-center text-sm text-gray-400">
+                        🎮 Seu jogo será analisado pela nossa equipe em breve!
+                    </p>
+                </form>
+                
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer with Contact Form -->
+    <footer class="bg-card-bg border-t-2 border-neon-purple py-12">
+        <div class="container mx-auto px-4">
+            <!-- Contact Form Section -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold retro-text mb-6 text-center neon-text">
+                    📞 Entre em Contato
+                </h3>
+                <div class="max-w-2xl mx-auto bg-dark-bg p-6 rounded-lg border-2 border-gray-600">
+                    <p class="text-center text-gray-300 mb-6">
+                        💬 Tem alguma dúvida, sugestão ou quer fazer uma parceria? Fale conosco!
+                    </p>
+                    <form id="contact-form" action="https://formsubmit.co/contato@portalindiesbr.com" method="POST" class="space-y-4">
+                        <!-- FormSubmit Configuration -->
+                        <input type="hidden" name="_subject" value="Novo contato - Portal Indie BR">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2">👤 Seu Nome *</label>
+                                <input type="text" name="nome" class="pixel-input w-full px-4 py-2 rounded" placeholder="Seu nome completo" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2">📧 Seu E-mail *</label>
+                                <input type="email" name="email" class="pixel-input w-full px-4 py-2 rounded" placeholder="seu@email.com" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold mb-2">📝 Mensagem *</label>
+                            <textarea name="mensagem" class="pixel-input w-full px-4 py-2 h-32 rounded" placeholder="Escreva sua mensagem aqui..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="pixel-button w-full py-3 rounded font-bold">
+                            📤 Enviar Mensagem
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Footer Links -->
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold retro-text mb-4 neon-text">Portal de Games Indie BR</h4>
+                    <p class="text-gray-400">Celebrando o talento brasileiro no desenvolvimento de jogos independentes.</p>
+                </div>
+                
+                <div>
+                    <h5 class="font-bold mb-4">🔗 Links Rápidos</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#catalog" class="nav-link hover:text-neon-blue transition-colors">Catálogo</a></li>
+                        <li><a href="#developers" class="nav-link hover:text-neon-blue transition-colors">Desenvolvedores</a></li>
+                        <li><a href="#blog" class="nav-link hover:text-neon-blue transition-colors">Blog</a></li>
+                        <li><a href="#submit" class="nav-link hover:text-neon-blue transition-colors">Enviar Jogo</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="font-bold mb-4">📱 Redes Sociais</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">📘 Facebook</a></li>
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">🐦 Twitter</a></li>
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">📷 Instagram</a></li>
+                        <li><a href="https://discord.gg/r5UbdabHXt" target="_blank" class="hover:text-neon-blue transition-colors">🎮 Discord</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="font-bold mb-4">📞 Contato</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">📧 Contato</a></li>
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">📋 Termos de Uso</a></li>
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">🔒 Privacidade</a></li>
+                        <li><a href="#" class="hover:text-neon-blue transition-colors">ℹ️ Sobre</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2024 Portal de Games Indie BR. Feito com ❤️ para a comunidade brasileira de games.</p>
+                <p class="mt-2">🎮 Créditos aos desenvolvedores brasileiros que fazem a diferença! 🇧🇷</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===========================================
+         SISTEMA DE NOTIFICAÇÕES
+    =========================================== -->
+    <div id="notification-container"></div>
+
+    <script>
+        // ===========================================
+        // JOGOS COM INTERFACE EM PORTUGUÊS
+        // ===========================================
+        const games = [
+            // AVENTURA
+            {
+                id: 1,
+                name: "Dandara: Trials of Fear Edition",
+                genre: "adventure",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/612390/header.jpg",
+                description: "Metroidvania brasileiro com interface em português, inspirado na capoeira e cultura afro-brasileira",
+                votes: 1247,
+                developer: "Long Hat House",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/612390/Dandara_Trials_of_Fear_Edition/",
+                featured: true
+            },
+            {
+                id: 2,
+                name: "Toren",
+                genre: "adventure",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/320820/header.jpg",
+                description: "Aventura poética brasileira com interface em português sobre uma garota em uma torre misteriosa",
+                votes: 298,
+                developer: "Swordtales",
+                platform: "PC, PS4",
+                link: "https://store.steampowered.com/app/320820/Toren/"
+            },
+            {
+                id: 3,
+                name: "Momodora: Reverie Under the Moonlight",
+                genre: "adventure",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/428550/header.jpg",
+                description: "Metroidvania com interface em português, pixel art detalhado e combate fluido",
+                votes: 445,
+                developer: "Bombservice",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/428550/Momodora_Reverie_Under_the_Moonlight/"
+            },
+            {
+                id: 4,
+                name: "Ori and the Blind Forest",
+                genre: "adventure",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/261570/header.jpg",
+                description: "Aventura emocional com interface em português sobre um espírito guardião da floresta",
+                votes: 2156,
+                developer: "Moon Studios",
+                platform: "PC, Xbox, Switch",
+                link: "https://store.steampowered.com/app/261570/Ori_and_the_Blind_Forest/",
+                featured: true
+            },
+            {
+                id: 5,
+                name: "Hollow Knight",
+                genre: "adventure",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg",
+                description: "Metroidvania épico com interface em português em um reino de insetos sombrio",
+                votes: 3421,
+                developer: "Team Cherry",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/367520/Hollow_Knight/",
+                featured: true
+            },
+            {
+                id: 6,
+                name: "Gris",
+                genre: "adventure",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/683320/header.jpg",
+                description: "Aventura artística com interface em português sobre superação e crescimento pessoal",
+                votes: 1876,
+                developer: "Nomada Studio",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/683320/GRIS/"
+            },
+
+            // AÇÃO
+            {
+                id: 7,
+                name: "Horizon Chase Turbo",
+                genre: "action",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/389140/header.jpg",
+                description: "Corrida arcade brasileira com interface em português inspirada nos clássicos dos anos 80 e 90",
+                votes: 892,
+                developer: "Aquiris Game Studio",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/389140/Horizon_Chase_Turbo/"
+            },
+            {
+                id: 8,
+                name: "Blazing Chrome",
+                genre: "action",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/609110/header.jpg",
+                description: "Run and gun brasileiro com interface em português inspirado em Contra e Metal Slug",
+                votes: 634,
+                developer: "JoyMasher",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/609110/Blazing_Chrome/"
+            },
+            {
+                id: 9,
+                name: "99Vidas",
+                genre: "action",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/487040/header.jpg",
+                description: "Beat 'em up brasileiro com interface em português inspirado nos clássicos dos fliperamas",
+                votes: 445,
+                developer: "QUByte Interactive",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/487040/99Vidas/"
+            },
+            {
+                id: 10,
+                name: "Unsighted",
+                genre: "action",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1062110/header.jpg",
+                description: "Action RPG brasileiro com interface em português em mundo pós-apocalíptico",
+                votes: 756,
+                developer: "Studio Pixel Punk",
+                platform: "PC, Switch, Xbox",
+                link: "https://store.steampowered.com/app/1062110/UNSIGHTED/"
+            },
+            {
+                id: 11,
+                name: "Relic Hunters Zero: Remix",
+                genre: "action",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/382490/header.jpg",
+                description: "Shooter brasileiro com interface em português, cooperativo com elementos de RPG",
+                votes: 234,
+                developer: "Rogue Snail",
+                platform: "PC, Mobile",
+                link: "https://store.steampowered.com/app/382490/Relic_Hunters_Zero_Remix/"
+            },
+            {
+                id: 12,
+                name: "Dead Cells",
+                genre: "action",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/588650/header.jpg",
+                description: "Roguelike de ação com interface em português e combate fluido",
+                votes: 2987,
+                developer: "Motion Twin",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/588650/Dead_Cells/"
+            },
+
+            // PLATAFORMA
+            {
+                id: 13,
+                name: "Celeste",
+                genre: "platform",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/504230/header.jpg",
+                description: "Plataforma desafiadora com interface em português sobre superação pessoal e ansiedade",
+                votes: 1456,
+                developer: "Maddy Makes Games",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/504230/Celeste/"
+            },
+            {
+                id: 14,
+                name: "Oniken: Unstoppable Edition",
+                genre: "platform",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/252010/header.jpg",
+                description: "Plataforma de ação brasileira com interface em português inspirada nos clássicos do NES",
+                votes: 387,
+                developer: "JoyMasher",
+                platform: "PC, Mobile",
+                link: "https://store.steampowered.com/app/252010/Oniken_Unstoppable_Edition/"
+            },
+            {
+                id: 15,
+                name: "Odallus: The Dark Call",
+                genre: "platform",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/319480/header.jpg",
+                description: "Plataforma brasileira com interface em português, elementos de RPG e horror",
+                votes: 267,
+                developer: "JoyMasher",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/319480/Odallus_The_Dark_Call/"
+            },
+            {
+                id: 16,
+                name: "A Hat in Time",
+                genre: "platform",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/253230/header.jpg",
+                description: "Plataforma 3D colorida com interface em português sobre uma garota e seu chapéu mágico",
+                votes: 1823,
+                developer: "Gears for Breakfast",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/253230/A_Hat_in_Time/"
+            },
+            {
+                id: 17,
+                name: "Super Meat Boy",
+                genre: "platform",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/40800/header.jpg",
+                description: "Plataforma desafiadora com interface em português sobre um pedaço de carne heroico",
+                votes: 1234,
+                developer: "Team Meat",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/40800/Super_Meat_Boy/"
+            },
+
+            // RPG
+            {
+                id: 18,
+                name: "Dodgeball Academia",
+                genre: "rpg",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1073980/header.jpg",
+                description: "RPG esportivo brasileiro com interface em português sobre queimada em uma academia especial",
+                votes: 523,
+                developer: "Pocket Trap",
+                platform: "PC, Switch, Xbox",
+                link: "https://store.steampowered.com/app/1073980/Dodgeball_Academia/"
+            },
+            {
+                id: 19,
+                name: "Undertale",
+                genre: "rpg",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/391540/header.jpg",
+                description: "RPG único com interface em português onde você pode poupar todos os inimigos",
+                votes: 4567,
+                developer: "Toby Fox",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/391540/Undertale/"
+            },
+            {
+                id: 20,
+                name: "Disco Elysium",
+                genre: "rpg",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/632470/header.jpg",
+                description: "RPG narrativo com interface em português e sistema de diálogos revolucionário",
+                votes: 3456,
+                developer: "ZA/UM",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/632470/Disco_Elysium/"
+            },
+            {
+                id: 21,
+                name: "Hades",
+                genre: "rpg",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg",
+                description: "Roguelike RPG com interface em português sobre o filho de Hades tentando escapar do submundo",
+                votes: 5432,
+                developer: "Supergiant Games",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/1145360/Hades/"
+            },
+
+            // PUZZLE
+            {
+                id: 22,
+                name: "The Witness",
+                genre: "puzzle",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/210970/header.jpg",
+                description: "Jogo de puzzle com interface em português em uma ilha misteriosa cheia de enigmas",
+                votes: 2134,
+                developer: "Thekla Inc.",
+                platform: "PC, PS4, Mobile",
+                link: "https://store.steampowered.com/app/210970/The_Witness/"
+            },
+            {
+                id: 23,
+                name: "Portal 2",
+                genre: "puzzle",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg",
+                description: "Puzzle em primeira pessoa com interface em português usando portais e física",
+                votes: 6789,
+                developer: "Valve",
+                platform: "PC, PS3, Xbox",
+                link: "https://store.steampowered.com/app/620/Portal_2/"
+            },
+            {
+                id: 24,
+                name: "Baba Is You",
+                genre: "puzzle",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/736260/header.jpg",
+                description: "Puzzle inovador com interface em português onde você muda as regras do jogo",
+                votes: 1567,
+                developer: "Hempuli Oy",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/736260/Baba_Is_You/"
+            },
+            {
+                id: 25,
+                name: "Tetris Effect",
+                genre: "puzzle",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1003590/header.jpg",
+                description: "Tetris evoluído com interface em português, música e efeitos visuais hipnotizantes",
+                votes: 2345,
+                developer: "Monstars Inc.",
+                platform: "PC, PS4, VR",
+                link: "https://store.steampowered.com/app/1003590/Tetris_Effect/"
+            },
+
+            // ESTRATÉGIA
+            {
+                id: 26,
+                name: "Into the Breach",
+                genre: "strategy",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/590380/header.jpg",
+                description: "Estratégia tática com interface em português sobre salvar a humanidade de aliens",
+                votes: 1876,
+                developer: "Subset Games",
+                platform: "PC, Switch",
+                link: "https://store.steampowered.com/app/590380/Into_the_Breach/"
+            },
+            {
+                id: 27,
+                name: "Civilization VI",
+                genre: "strategy",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/289070/header.jpg",
+                description: "Estratégia de civilização com interface em português para construir um império",
+                votes: 4321,
+                developer: "Firaxis Games",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/289070/Sid_Meiers_Civilization_VI/"
+            },
+            {
+                id: 28,
+                name: "Age of Empires II: Definitive Edition",
+                genre: "strategy",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/813780/header.jpg",
+                description: "RTS clássico com interface em português remasterizado com gráficos modernos",
+                votes: 3456,
+                developer: "Forgotten Empires",
+                platform: "PC, Xbox",
+                link: "https://store.steampowered.com/app/813780/Age_of_Empires_II_Definitive_Edition/"
+            },
+
+            // CORRIDA
+            {
+                id: 29,
+                name: "Burnout Paradise Remastered",
+                genre: "racing",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1238080/header.jpg",
+                description: "Corrida arcade com interface em português em mundo aberto cheio de adrenalina",
+                votes: 2134,
+                developer: "Criterion Games",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/1238080/Burnout_Paradise_Remastered/"
+            },
+            {
+                id: 30,
+                name: "Dirt Rally 2.0",
+                genre: "racing",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/690790/header.jpg",
+                description: "Simulador de rally com interface em português e física realista",
+                votes: 1567,
+                developer: "Codemasters",
+                platform: "PC, PS4, Xbox",
+                link: "https://store.steampowered.com/app/690790/DiRT_Rally_20/"
+            },
+
+            // SIMULAÇÃO
+            {
+                id: 31,
+                name: "Stardew Valley",
+                genre: "simulation",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/413150/header.jpg",
+                description: "Simulação de fazenda com interface em português, relaxante e viciante",
+                votes: 7890,
+                developer: "ConcernedApe",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/413150/Stardew_Valley/"
+            },
+            {
+                id: 32,
+                name: "Cities: Skylines",
+                genre: "simulation",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/255710/header.jpg",
+                description: "Simulador de cidade com interface em português para construir a metrópole dos sonhos",
+                votes: 4567,
+                developer: "Colossal Order",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/255710/Cities_Skylines/"
+            },
+            {
+                id: 33,
+                name: "Two Point Hospital",
+                genre: "simulation",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/535930/header.jpg",
+                description: "Simulação hospitalar com interface em português, humor britânico e gestão divertida",
+                votes: 2345,
+                developer: "Two Point Studios",
+                platform: "PC, Switch, PS4",
+                link: "https://store.steampowered.com/app/535930/Two_Point_Hospital/"
+            },
+
+            // TERROR
+            {
+                id: 34,
+                name: "Phasmophobia",
+                genre: "horror",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/739630/header.jpg",
+                description: "Terror cooperativo com interface em português sobre caça fantasmas",
+                votes: 3456,
+                developer: "Kinetic Games",
+                platform: "PC, VR",
+                link: "https://store.steampowered.com/app/739630/Phasmophobia/"
+            },
+            {
+                id: 35,
+                name: "Amnesia: The Dark Descent",
+                genre: "horror",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/57300/header.jpg",
+                description: "Terror psicológico com interface em português em castelo sombrio e assombrado",
+                votes: 2134,
+                developer: "Frictional Games",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/57300/Amnesia_The_Dark_Descent/"
+            },
+
+            // CASUAL
+            {
+                id: 36,
+                name: "Among Us",
+                genre: "casual",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/945360/header.jpg",
+                description: "Jogo social casual com interface em português sobre impostores na nave espacial",
+                votes: 8765,
+                developer: "InnerSloth",
+                platform: "PC, Mobile, Switch",
+                link: "https://store.steampowered.com/app/945360/Among_Us/"
+            },
+            {
+                id: 37,
+                name: "Fall Guys",
+                genre: "casual",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1097150/header.jpg",
+                description: "Battle royale casual com interface em português e personagens fofos",
+                votes: 5432,
+                developer: "Mediatonic",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/1097150/Fall_Guys/"
+            },
+            {
+                id: 38,
+                name: "Animal Crossing: New Horizons",
+                genre: "casual",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1234567/header.jpg",
+                description: "Simulação casual com interface em português sobre vida em ilha paradisíaca",
+                votes: 6789,
+                developer: "Nintendo",
+                platform: "Switch",
+                link: "https://www.nintendo.com/pt-br/store/products/animal-crossing-new-horizons-switch/"
+            },
+
+            // ESPORTES
+            {
+                id: 39,
+                name: "FIFA 24",
+                genre: "sports",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/2195250/header.jpg",
+                description: "Simulador de futebol com interface em português e times brasileiros",
+                votes: 4321,
+                developer: "EA Sports",
+                platform: "PC, PS5, Xbox",
+                link: "https://store.steampowered.com/app/2195250/EA_SPORTS_FC_24/"
+            },
+            {
+                id: 40,
+                name: "Rocket League",
+                genre: "sports",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/252950/header.jpg",
+                description: "Futebol com carros e interface em português, competitivo e divertido",
+                votes: 6543,
+                developer: "Psyonix",
+                platform: "PC, PS4, Switch",
+                link: "https://store.steampowered.com/app/252950/Rocket_League/"
+            },
+
+            // EDUCATIVO
+            {
+                id: 41,
+                name: "Kerbal Space Program",
+                genre: "educational",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/220200/header.jpg",
+                description: "Simulação espacial educativa com interface em português sobre física e astronomia",
+                votes: 3456,
+                developer: "Squad",
+                platform: "PC, PS4, Xbox",
+                link: "https://store.steampowered.com/app/220200/Kerbal_Space_Program/"
+            },
+            {
+                id: 42,
+                name: "Human: Fall Flat",
+                genre: "educational",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/477160/header.jpg",
+                description: "Puzzle físico educativo com interface em português sobre resolução de problemas",
+                votes: 2345,
+                developer: "No Brakes Games",
+                platform: "PC, Switch, Mobile",
+                link: "https://store.steampowered.com/app/477160/Human_Fall_Flat/"
+            }
+        ];
+
+        // ===========================================
+        // SISTEMA DE AUTENTICAÇÃO
+        // ===========================================
+        class AuthSystem {
+            constructor() {
+                this.currentUser = null;
+                this.init();
+            }
+
+            init() {
+                // Verificar se há usuário logado ao carregar a página
+                this.loadUserSession();
+                this.bindEvents();
+                this.setupAutoSave();
+            }
+
+            loadUserSession() {
+                const savedUser = localStorage.getItem('portalIndieUser');
+                const sessionExpiry = localStorage.getItem('portalIndieSessionExpiry');
+                
+                if (savedUser && sessionExpiry) {
+                    const now = new Date().getTime();
+                    const expiryTime = parseInt(sessionExpiry);
+                    
+                    // Verificar se a sessão ainda é válida (30 dias)
+                    if (now < expiryTime) {
+                        this.currentUser = JSON.parse(savedUser);
+                        this.showUserProfile();
+                        
+                        // Renovar sessão por mais 30 dias
+                        this.extendSession();
+                        
+                        console.log('🔐 Sessão restaurada para:', this.currentUser.name);
+                    } else {
+                        // Sessão expirada, limpar dados
+                        this.clearSession();
+                        console.log('⏰ Sessão expirada, usuário deslogado');
+                    }
+                } else if (savedUser) {
+                    // Dados antigos sem expiração, migrar
+                    this.currentUser = JSON.parse(savedUser);
+                    this.showUserProfile();
+                    this.extendSession();
+                    console.log('🔄 Sessão migrada para novo formato');
+                }
+            }
+
+            setupAutoSave() {
+                // Salvar estado antes de fechar a página
+                window.addEventListener('beforeunload', () => {
+                    if (this.currentUser) {
+                        this.saveUserSession();
+                    }
+                });
+
+                // Salvar estado quando a página perde o foco
+                window.addEventListener('blur', () => {
+                    if (this.currentUser) {
+                        this.saveUserSession();
+                    }
+                });
+
+                // Salvar estado periodicamente (a cada 5 minutos)
+                setInterval(() => {
+                    if (this.currentUser) {
+                        this.saveUserSession();
+                    }
+                }, 5 * 60 * 1000); // 5 minutos
+            }
+
+            saveUserSession() {
+                if (this.currentUser) {
+                    // Atualizar timestamp da última atividade
+                    this.currentUser.lastActivity = new Date().toISOString();
+                    
+                    localStorage.setItem('portalIndieUser', JSON.stringify(this.currentUser));
+                    
+                    // Definir expiração para 30 dias a partir de agora
+                    const expiryTime = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
+                    localStorage.setItem('portalIndieSessionExpiry', expiryTime.toString());
+                }
+            }
+
+            extendSession() {
+                if (this.currentUser) {
+                    const expiryTime = new Date().getTime() + (30 * 24 * 60 * 60 * 1000); // 30 dias
+                    localStorage.setItem('portalIndieSessionExpiry', expiryTime.toString());
+                }
+            }
+
+            clearSession() {
+                localStorage.removeItem('portalIndieUser');
+                localStorage.removeItem('portalIndieSessionExpiry');
+                this.currentUser = null;
+            }
+
+            bindEvents() {
+                // Botões de abrir modal
+                document.getElementById('login-btn').addEventListener('click', () => this.openAuthModal());
+                document.getElementById('mobile-login-btn').addEventListener('click', () => this.openAuthModal());
+                
+                // Fechar modal
+                document.getElementById('close-auth-modal').addEventListener('click', () => this.closeAuthModal());
+                
+                // Alternar entre abas
+                document.getElementById('login-tab').addEventListener('click', () => this.switchTab('login'));
+                document.getElementById('register-tab').addEventListener('click', () => this.switchTab('register'));
+                document.getElementById('switch-to-register').addEventListener('click', () => this.switchTab('register'));
+                document.getElementById('switch-to-login').addEventListener('click', () => this.switchTab('login'));
+                
+                // Submissão de formulários
+                document.getElementById('login-submit').addEventListener('click', (e) => this.handleLogin(e));
+                document.getElementById('register-submit').addEventListener('click', (e) => this.handleRegister(e));
+                
+                // Logout
+                document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+                
+                // Fechar modal de boas-vindas
+                document.getElementById('close-welcome').addEventListener('click', () => this.closeWelcomeModal());
+                
+                // Painel administrativo
+                document.getElementById('admin-panel-btn').addEventListener('click', () => this.openAdminPanel());
+                document.getElementById('close-admin-modal').addEventListener('click', () => this.closeAdminPanel());
+                
+                // Fechar modal clicando fora
+                document.getElementById('auth-modal').addEventListener('click', (e) => {
+                    if (e.target.id === 'auth-modal') this.closeAuthModal();
+                });
+                
+                document.getElementById('welcome-modal').addEventListener('click', (e) => {
+                    if (e.target.id === 'welcome-modal') this.closeWelcomeModal();
+                });
+                
+                document.getElementById('admin-modal').addEventListener('click', (e) => {
+                    if (e.target.id === 'admin-modal') this.closeAdminPanel();
+                });
+            }
+
+            openAuthModal() {
+                document.getElementById('auth-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeAuthModal() {
+                document.getElementById('auth-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                this.clearErrors();
+            }
+
+            switchTab(tab) {
+                const loginTab = document.getElementById('login-tab');
+                const registerTab = document.getElementById('register-tab');
+                const loginForm = document.getElementById('login-form');
+                const registerForm = document.getElementById('register-form');
+
+                if (tab === 'login') {
+                    loginTab.className = 'tab-active flex-1 py-2 px-4 rounded font-bold text-sm transition-all';
+                    registerTab.className = 'tab-inactive flex-1 py-2 px-4 rounded font-bold text-sm transition-all';
+                    loginForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                } else {
+                    registerTab.className = 'tab-active flex-1 py-2 px-4 rounded font-bold text-sm transition-all';
+                    loginTab.className = 'tab-inactive flex-1 py-2 px-4 rounded font-bold text-sm transition-all';
+                    registerForm.classList.remove('hidden');
+                    loginForm.classList.add('hidden');
+                }
+                
+                this.clearErrors();
+            }
+
+            validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            validatePassword(password) {
+                return password.length >= 6;
+            }
+
+            validateName(name) {
+                return name.length >= 2;
+            }
+
+            showError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                const errorSpan = field.parentNode.querySelector('.error-message');
+                
+                field.classList.add('error');
+                errorSpan.textContent = message;
+                errorSpan.classList.remove('hidden');
+            }
+
+            clearErrors() {
+                const errorInputs = document.querySelectorAll('.pixel-input.error');
+                const errorMessages = document.querySelectorAll('.error-message');
+                
+                errorInputs.forEach(input => input.classList.remove('error'));
+                errorMessages.forEach(msg => msg.classList.add('hidden'));
+            }
+
+            handleLogin(e) {
+                e.preventDefault();
+                this.clearErrors();
+
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
+
+                let hasError = false;
+
+                if (!email || !this.validateEmail(email)) {
+                    this.showError('login-email', 'E-mail inválido');
+                    hasError = true;
+                }
+
+                if (!password || !this.validatePassword(password)) {
+                    this.showError('login-password', 'Senha deve ter pelo menos 6 caracteres');
+                    hasError = true;
+                }
+
+                if (hasError) return;
+
+                // Simular login (verificar se usuário existe)
+                const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    // Atualizar dados do usuário
+                    user.lastLogin = new Date().toISOString();
+                    user.lastActivity = new Date().toISOString();
+                    
+                    this.currentUser = user;
+                    this.saveUserSession(); // Salvar com expiração
+                    this.showUserProfile();
+                    this.closeAuthModal();
+                    this.showNotification('🎉 Login realizado com sucesso! Bem-vindo de volta!', 'success');
+                    
+                    console.log('✅ Login realizado:', user.name);
+                } else {
+                    this.showError('login-email', 'E-mail ou senha incorretos');
+                }
+            }
+
+            handleRegister(e) {
+                e.preventDefault();
+                this.clearErrors();
+
+                const name = document.getElementById('register-name').value.trim();
+                const email = document.getElementById('register-email').value.trim();
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm').value;
+                const newsletterConsent = document.getElementById('newsletter-consent').checked;
+
+                let hasError = false;
+
+                if (!name || !this.validateName(name)) {
+                    this.showError('register-name', 'Nome deve ter pelo menos 2 caracteres');
+                    hasError = true;
+                }
+
+                if (!email || !this.validateEmail(email)) {
+                    this.showError('register-email', 'E-mail inválido');
+                    hasError = true;
+                }
+
+                if (!password || !this.validatePassword(password)) {
+                    this.showError('register-password', 'Senha deve ter pelo menos 6 caracteres');
+                    hasError = true;
+                }
+
+                if (password !== confirmPassword) {
+                    this.showError('register-confirm', 'Senhas não coincidem');
+                    hasError = true;
+                }
+
+                if (hasError) return;
+
+                // Verificar se usuário já existe
+                const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                if (users.find(u => u.email === email)) {
+                    this.showError('register-email', 'Este e-mail já está cadastrado');
+                    return;
+                }
+
+                // Criar novo usuário
+                const newUser = {
+                    id: Date.now(),
+                    name,
+                    email,
+                    password,
+                    newsletterConsent,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    lastActivity: new Date().toISOString(),
+                    isNewUser: true
+                };
+
+                users.push(newUser);
+                localStorage.setItem('portalIndieUsers', JSON.stringify(users));
+
+                this.currentUser = newUser;
+                this.saveUserSession(); // Salvar com expiração
+
+                this.showUserProfile();
+                this.closeAuthModal();
+                
+                console.log('✅ Novo usuário registrado:', newUser.name);
+                
+                // Mostrar modal de boas-vindas para novos usuários
+                setTimeout(() => this.showWelcomeModal(), 500);
+            }
+
+            showUserProfile() {
+                if (!this.currentUser) return;
+
+                // Mostrar barra de perfil
+                document.getElementById('profile-bar').classList.remove('hidden');
+                document.getElementById('user-name').textContent = this.currentUser.name;
+
+                // Verificar se é admin
+                if (this.currentUser.email === 'rodrigues.cr.luis@gmail.com') {
+                    document.getElementById('admin-panel-btn').classList.remove('hidden');
+                }
+
+                // Esconder botões de login
+                document.getElementById('login-btn').style.display = 'none';
+                document.getElementById('mobile-login-btn').style.display = 'none';
+                
+                // Mostrar formulário de envio e esconder área de login necessário
+                document.getElementById('submit-login-required').classList.add('hidden');
+                document.getElementById('submit-form-container').classList.remove('hidden');
+                
+                // Preencher dados do usuário no formulário
+                document.getElementById('submit-user-name').textContent = this.currentUser.name;
+                document.getElementById('submit-user-id').value = this.currentUser.id;
+                document.getElementById('submit-logged-email').value = this.currentUser.email;
+                document.getElementById('submit-logged-name').value = this.currentUser.name;
+                
+                // Mostrar indicador de sessão ativa no console
+                const sessionExpiry = localStorage.getItem('portalIndieSessionExpiry');
+                if (sessionExpiry) {
+                    const expiryDate = new Date(parseInt(sessionExpiry));
+                    console.log('🔐 Sessão ativa até:', expiryDate.toLocaleString('pt-BR'));
+                }
+            }
+
+            showWelcomeModal() {
+                if (!this.currentUser || !this.currentUser.isNewUser) return;
+
+                document.getElementById('welcome-user-name').textContent = this.currentUser.name;
+                document.getElementById('welcome-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeWelcomeModal() {
+                document.getElementById('welcome-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                
+                // Marcar que o usuário já viu a mensagem de boas-vindas
+                if (this.currentUser) {
+                    this.currentUser.isNewUser = false;
+                    this.currentUser.welcomeShown = true;
+                    this.currentUser.lastActivity = new Date().toISOString();
+                    
+                    // Salvar sessão atualizada
+                    this.saveUserSession();
+                    
+                    // Atualizar também na lista de usuários
+                    const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                    const userIndex = users.findIndex(u => u.id === this.currentUser.id);
+                    if (userIndex !== -1) {
+                        users[userIndex].isNewUser = false;
+                        users[userIndex].welcomeShown = true;
+                        localStorage.setItem('portalIndieUsers', JSON.stringify(users));
+                    }
+                    
+                    console.log('✅ Modal de boas-vindas fechado para:', this.currentUser.name);
+                }
+            }
+
+            logout() {
+                const userName = this.currentUser?.name || 'Usuário';
+                
+                // Limpar sessão completamente
+                this.clearSession();
+                
+                // Esconder barra de perfil e painel admin
+                document.getElementById('profile-bar').classList.add('hidden');
+                document.getElementById('admin-panel-btn').classList.add('hidden');
+                
+                // Mostrar botões de login
+                document.getElementById('login-btn').style.display = 'block';
+                document.getElementById('mobile-login-btn').style.display = 'block';
+                
+                // Esconder formulário de envio e mostrar área de login necessário
+                document.getElementById('submit-form-container').classList.add('hidden');
+                document.getElementById('submit-login-required').classList.remove('hidden');
+                
+                // Fechar painel admin se estiver aberto
+                document.getElementById('admin-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                
+                console.log('👋 Logout realizado para:', userName);
+                this.showNotification(`👋 Logout realizado com sucesso, ${userName}! Até a próxima!`, 'success');
+            }
+
+            openAdminPanel() {
+                if (this.currentUser?.email !== 'rodrigues.cr.luis@gmail.com') {
+                    this.showNotification('🚫 Acesso negado! Apenas administradores podem acessar este painel.', 'error');
+                    return;
+                }
+
+                document.getElementById('admin-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                // Inicializar painel admin
+                if (!window.adminSystem) {
+                    window.adminSystem = new AdminSystem();
+                }
+                window.adminSystem.loadSubmissions();
+            }
+
+            closeAdminPanel() {
+                document.getElementById('admin-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+
+            showNotification(message, type = 'success') {
+                const container = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                
+                notification.className = `notification ${type} text-white px-6 py-4 rounded-lg shadow-lg`;
+                notification.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span>${message}</span>
+                        <button class="ml-4 text-xl hover:opacity-70" onclick="this.parentElement.parentElement.remove()">×</button>
+                    </div>
+                `;
+                
+                container.appendChild(notification);
+                
+                // Auto-remover após 5 segundos
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // ===========================================
+        // SISTEMA DE NEWSLETTER
+        // ===========================================
+        class NewsletterSystem {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                document.getElementById('newsletter-form').addEventListener('submit', (e) => this.handleSubmit(e));
+            }
+
+            validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                const emailInput = document.getElementById('newsletter-email');
+                const email = emailInput.value.trim();
+                
+                if (!email || !this.validateEmail(email)) {
+                    emailInput.classList.add('error');
+                    authSystem.showNotification('📧 Por favor, digite um e-mail válido!', 'error');
+                    return;
+                }
+                
+                emailInput.classList.remove('error');
+                
+                // Salvar e-mail na newsletter
+                const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                
+                if (subscribers.includes(email)) {
+                    authSystem.showNotification('📬 Este e-mail já está cadastrado na nossa newsletter!', 'error');
+                    return;
+                }
+                
+                subscribers.push(email);
+                localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+                
+                // Limpar formulário
+                emailInput.value = '';
+                
+                // Mostrar mensagem de sucesso
+                authSystem.showNotification('🎉 Obrigado por se inscrever! Você receberá as melhores novidades dos jogos indies brasileiros!', 'success');
+            }
+        }
+
+        // ===========================================
+        // SISTEMA ADMINISTRATIVO
+        // ===========================================
+        class AdminSystem {
+            constructor() {
+                this.currentTab = 'submissions';
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadSubmissions();
+            }
+
+            bindEvents() {
+                // Abas do admin
+                document.getElementById('submissions-tab').addEventListener('click', () => this.switchTab('submissions'));
+                document.getElementById('users-tab').addEventListener('click', () => this.switchTab('users'));
+                document.getElementById('newsletter-tab').addEventListener('click', () => this.switchTab('newsletter'));
+                document.getElementById('games-tab').addEventListener('click', () => this.switchTab('games'));
+                document.getElementById('voting-tab').addEventListener('click', () => this.switchTab('voting'));
+                document.getElementById('stats-tab').addEventListener('click', () => this.switchTab('stats'));
+            }
+
+            switchTab(tab) {
+                this.currentTab = tab;
+                
+                // Atualizar botões das abas
+                document.querySelectorAll('#admin-modal .tab-active, #admin-modal .tab-inactive').forEach(btn => {
+                    btn.className = 'tab-inactive flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all';
+                });
+                
+                document.getElementById(`${tab}-tab`).className = 'tab-active flex-shrink-0 py-2 px-4 rounded font-bold text-sm transition-all';
+                
+                // Carregar conteúdo da aba
+                switch(tab) {
+                    case 'submissions':
+                        this.loadSubmissions();
+                        break;
+                    case 'users':
+                        this.loadUsers();
+                        break;
+                    case 'newsletter':
+                        this.loadNewsletter();
+                        break;
+                    case 'games':
+                        this.loadGamesManager();
+                        break;
+                    case 'voting':
+                        this.loadVotingManager();
+                        break;
+                    case 'stats':
+                        this.loadStats();
+                        break;
+                }
+            }
+
+            loadSubmissions() {
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const content = document.getElementById('admin-content');
+                
+                if (submissions.length === 0) {
+                    content.innerHTML = `
+                        <div class="text-center py-12">
+                            <span class="text-6xl mb-4 block">📭</span>
+                            <h3 class="text-xl font-bold mb-2">Nenhum jogo enviado ainda</h3>
+                            <p class="text-gray-400">Os jogos enviados pelo formulário aparecerão aqui.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                content.innerHTML = `
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-xl font-bold">📤 Jogos Enviados (${submissions.length})</h3>
+                        <button onclick="window.adminSystem.clearSubmissions()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm">
+                            🗑️ Limpar Todos
+                        </button>
+                    </div>
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        ${submissions.reverse().map(submission => `
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-600">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="text-lg font-bold text-neon-blue">${submission.name}</h4>
+                                    <div class="flex space-x-2">
+                                        <span class="text-xs ${this.getStatusColor(submission.status)} px-2 py-1 rounded">${submission.status || 'Enviado'}</span>
+                                        <button onclick="window.adminSystem.deleteSubmission(${submission.id})" class="text-red-400 hover:text-red-300">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p><strong>🎯 Gênero:</strong> ${submission.genre}</p>
+                                        <p><strong>💻 Plataforma:</strong> ${submission.platform}</p>
+                                        <p><strong>👨‍💻 Desenvolvedor:</strong> ${submission.developer}</p>
+                                        <p><strong>📧 E-mail:</strong> ${submission.email}</p>
+                                        <p><strong>🖼️ Capa:</strong> ${submission.hasCover ? '✅ Enviada' : '❌ Não enviada'}</p>
+                                    </div>
+                                    <div>
+                                        <p><strong>🔗 Link:</strong> <a href="${submission.link}" target="_blank" class="text-neon-blue hover:underline">Abrir Jogo</a></p>
+                                        <p><strong>📱 Redes:</strong> ${submission.social || 'Não informado'}</p>
+                                        <p><strong>📅 Enviado:</strong> ${new Date(submission.submittedAt).toLocaleString('pt-BR')}</p>
+                                        ${submission.videoUrl ? `<p><strong>🎥 Vídeo:</strong> <a href="${submission.videoUrl}" target="_blank" class="text-neon-blue hover:underline">Assistir</a></p>` : ''}
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <p><strong>📝 Descrição:</strong></p>
+                                    <p class="text-gray-300 text-sm mt-1">${submission.description}</p>
+                                </div>
+                                
+                                ${submission.status === 'Em Votação' ? `
+                                    <div class="mt-3 p-3 bg-blue-900 rounded border border-blue-600">
+                                        <p class="text-sm font-bold text-blue-300 mb-2">🗳️ Votação Ativa</p>
+                                        <div class="grid grid-cols-2 gap-4 text-xs">
+                                            <div>
+                                                <p>✅ Aprovações: <span class="font-bold">${submission.votes?.approve || 0}</span></p>
+                                                <p>❌ Rejeições: <span class="font-bold">${submission.votes?.reject || 0}</span></p>
+                                            </div>
+                                            <div>
+                                                <p>📅 Termina em: <span class="font-bold">${this.getVotingTimeLeft(submission.votingEndDate)}</span></p>
+                                                <p>👥 Total de votos: <span class="font-bold">${(submission.votes?.approve || 0) + (submission.votes?.reject || 0)}</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 flex space-x-2">
+                                            <button onclick="window.adminSystem.endVoting('${submission.id}', true)" class="bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-xs">
+                                                ✅ Finalizar e Aprovar
+                                            </button>
+                                            <button onclick="window.adminSystem.endVoting('${submission.id}', false)" class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-xs">
+                                                ❌ Finalizar e Rejeitar
+                                            </button>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                    ${submission.status === 'Enviado' || !submission.status ? `
+                                        <button onclick="window.adminSystem.showVideoModal('${submission.id}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs">
+                                            🎥 Criar Votação
+                                        </button>
+                                        <button onclick="window.adminSystem.approveDirectly('${submission.id}')" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs">
+                                            ✅ Aprovar Direto
+                                        </button>
+                                        <button onclick="window.adminSystem.rejectDirectly('${submission.id}')" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs">
+                                            ❌ Rejeitar Direto
+                                        </button>
+                                    ` : ''}
+                                    
+                                    ${submission.status === 'Aprovado' ? `
+                                        <span class="bg-green-600 px-3 py-1 rounded text-xs">✅ Jogo aprovado e publicado!</span>
+                                    ` : ''}
+                                    
+                                    ${submission.status === 'Rejeitado' ? `
+                                        <span class="bg-red-600 px-3 py-1 rounded text-xs">❌ Jogo rejeitado</span>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            loadUsers() {
+                const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                const content = document.getElementById('admin-content');
+                
+                content.innerHTML = `
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold">👥 Usuários Cadastrados (${users.length})</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-800">
+                                    <th class="text-left p-3">Nome</th>
+                                    <th class="text-left p-3">E-mail</th>
+                                    <th class="text-left p-3">Newsletter</th>
+                                    <th class="text-left p-3">Cadastro</th>
+                                    <th class="text-left p-3">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${users.map(user => `
+                                    <tr class="border-b border-gray-700">
+                                        <td class="p-3">${user.name}</td>
+                                        <td class="p-3">${user.email}</td>
+                                        <td class="p-3">${user.newsletterConsent ? '✅ Sim' : '❌ Não'}</td>
+                                        <td class="p-3">${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td>
+                                        <td class="p-3">
+                                            <button onclick="window.adminSystem.deleteUser(${user.id})" class="text-red-400 hover:text-red-300 text-xs">
+                                                🗑️ Excluir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            loadNewsletter() {
+                const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                const content = document.getElementById('admin-content');
+                
+                content.innerHTML = `
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-xl font-bold">📬 Inscritos na Newsletter (${subscribers.length})</h3>
+                        <button onclick="window.adminSystem.exportEmails()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">
+                            📥 Exportar E-mails
+                        </button>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-2 max-h-96 overflow-y-auto">
+                        ${subscribers.map(email => `
+                            <div class="bg-gray-800 p-3 rounded flex justify-between items-center">
+                                <span class="text-sm">${email}</span>
+                                <button onclick="window.adminSystem.removeFromNewsletter('${email}')" class="text-red-400 hover:text-red-300 text-xs">
+                                    🗑️
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            loadGamesManager() {
+                const content = document.getElementById('admin-content');
+                
+                content.innerHTML = `
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold">🎮 Gerenciar Jogos do Catálogo</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                        ${games.map(game => `
+                            <div class="bg-gray-800 p-4 rounded-lg">
+                                <img src="${game.image}" alt="${game.name}" class="w-full h-32 object-cover rounded mb-3">
+                                <h4 class="font-bold mb-2">${game.name}</h4>
+                                <p class="text-xs text-gray-400 mb-2">${game.developer}</p>
+                                <p class="text-xs mb-3">❤️ ${game.votes} votos</p>
+                                <div class="flex space-x-2">
+                                    <button onclick="window.adminSystem.toggleFeatured(${game.id})" class="text-xs px-2 py-1 rounded ${game.featured ? 'bg-yellow-600' : 'bg-gray-600'}">
+                                        ${game.featured ? '⭐ Destaque' : '☆ Destacar'}
+                                    </button>
+                                    <button onclick="window.adminSystem.editGame(${game.id})" class="text-xs px-2 py-1 rounded bg-blue-600">
+                                        ✏️ Editar
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            loadVotingManager() {
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const votingGames = submissions.filter(s => s.status === 'Em Votação');
+                const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                
+                const content = document.getElementById('admin-content');
+                
+                content.innerHTML = `
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold">🗳️ Gerenciar Votações</h3>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Votações Ativas -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-4 text-blue-400">📊 Votações Ativas (${votingGames.length})</h4>
+                            <div class="space-y-4 max-h-96 overflow-y-auto">
+                                ${votingGames.length === 0 ? `
+                                    <div class="text-center py-8 text-gray-400">
+                                        <span class="text-4xl block mb-2">🗳️</span>
+                                        <p>Nenhuma votação ativa</p>
+                                    </div>
+                                ` : votingGames.map(game => `
+                                    <div class="bg-blue-900 p-4 rounded border border-blue-600">
+                                        <h5 class="font-bold text-blue-300 mb-2">${game.name}</h5>
+                                        <div class="text-sm space-y-1">
+                                            <p>👨‍💻 ${game.developer}</p>
+                                            <p>📅 Termina: ${this.getVotingTimeLeft(game.votingEndDate)}</p>
+                                            <p>✅ Aprovações: <span class="font-bold">${game.votes?.approve || 0}</span></p>
+                                            <p>❌ Rejeições: <span class="font-bold">${game.votes?.reject || 0}</span></p>
+                                            <p>🎥 <a href="${game.videoUrl}" target="_blank" class="text-blue-300 hover:underline">Ver Vídeo</a></p>
+                                        </div>
+                                        <div class="mt-3 flex space-x-2">
+                                            <button onclick="window.adminSystem.endVoting('${game.id}', true)" class="bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-xs">
+                                                ✅ Aprovar
+                                            </button>
+                                            <button onclick="window.adminSystem.endVoting('${game.id}', false)" class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-xs">
+                                                ❌ Rejeitar
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Jogos da Comunidade -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-4 text-green-400">🎮 Jogos de Vocês (${communityGames.length})</h4>
+                            <div class="space-y-4 max-h-96 overflow-y-auto">
+                                ${communityGames.length === 0 ? `
+                                    <div class="text-center py-8 text-gray-400">
+                                        <span class="text-4xl block mb-2">🎮</span>
+                                        <p>Nenhum jogo aprovado ainda</p>
+                                    </div>
+                                ` : communityGames.reverse().map(game => `
+                                    <div class="bg-green-900 p-4 rounded border border-green-600">
+                                        <h5 class="font-bold text-green-300 mb-2">${game.name}</h5>
+                                        <div class="text-sm space-y-1">
+                                            <p>👨‍💻 ${game.developer}</p>
+                                            <p>📅 Aprovado: ${new Date(game.approvedAt).toLocaleDateString('pt-BR')}</p>
+                                            <p>🎯 ${game.genre} | 💻 ${game.platform}</p>
+                                            ${game.videoUrl ? `<p>🎥 <a href="${game.videoUrl}" target="_blank" class="text-green-300 hover:underline">Ver Vídeo</a></p>` : ''}
+                                            <p>🔗 <a href="${game.link}" target="_blank" class="text-green-300 hover:underline">Jogar</a></p>
+                                        </div>
+                                        <div class="mt-3">
+                                            <button onclick="window.adminSystem.removeCommunityGame('${game.id}')" class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-xs">
+                                                🗑️ Remover
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            loadStats() {
+                const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                const votingGames = submissions.filter(s => s.status === 'Em Votação');
+                
+                // Calcular estatísticas mais detalhadas
+                const approvedGames = submissions.filter(s => s.status === 'Aprovado').length;
+                const rejectedGames = submissions.filter(s => s.status === 'Rejeitado').length;
+                const pendingGames = submissions.filter(s => !s.status || s.status === 'Enviado').length;
+                
+                // Calcular total de votos
+                let totalVotes = 0;
+                submissions.forEach(game => {
+                    if (game.votes) {
+                        totalVotes += (game.votes.approve || 0) + (game.votes.reject || 0);
+                    }
+                });
+                
+                // Usuários com newsletter
+                const usersWithNewsletter = users.filter(u => u.newsletterConsent).length;
+                
+                // Calcular taxa de aprovação
+                const totalProcessed = approvedGames + rejectedGames;
+                const approvalRate = totalProcessed > 0 ? Math.round((approvedGames / totalProcessed) * 100) : 0;
+                
+                const content = document.getElementById('admin-content');
+                
+                content.innerHTML = `
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold">📊 Estatísticas Completas do Portal</h3>
+                        <p class="text-gray-400 text-sm mt-1">Dados atualizados em tempo real</p>
+                    </div>
+                    
+                    <!-- Estatísticas Principais -->
+                    <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                        <div class="bg-blue-900 p-6 rounded-lg text-center hover:bg-blue-800 transition-colors">
+                            <div class="text-3xl mb-2">👥</div>
+                            <div class="text-2xl font-bold">${users.length}</div>
+                            <div class="text-sm text-gray-300">Usuários Cadastrados</div>
+                            <div class="text-xs text-blue-300 mt-1">${usersWithNewsletter} com newsletter</div>
+                        </div>
+                        <div class="bg-green-900 p-6 rounded-lg text-center hover:bg-green-800 transition-colors">
+                            <div class="text-3xl mb-2">📬</div>
+                            <div class="text-2xl font-bold">${subscribers.length}</div>
+                            <div class="text-sm text-gray-300">Inscritos Newsletter</div>
+                            <div class="text-xs text-green-300 mt-1">Total de e-mails</div>
+                        </div>
+                        <div class="bg-purple-900 p-6 rounded-lg text-center hover:bg-purple-800 transition-colors">
+                            <div class="text-3xl mb-2">📤</div>
+                            <div class="text-2xl font-bold">${submissions.length}</div>
+                            <div class="text-sm text-gray-300">Jogos Enviados</div>
+                            <div class="text-xs text-purple-300 mt-1">${pendingGames} pendentes</div>
+                        </div>
+                        <div class="bg-orange-900 p-6 rounded-lg text-center hover:bg-orange-800 transition-colors">
+                            <div class="text-3xl mb-2">🗳️</div>
+                            <div class="text-2xl font-bold">${votingGames.length}</div>
+                            <div class="text-sm text-gray-300">Votações Ativas</div>
+                            <div class="text-xs text-orange-300 mt-1">${totalVotes} votos totais</div>
+                        </div>
+                        <div class="bg-yellow-900 p-6 rounded-lg text-center hover:bg-yellow-800 transition-colors">
+                            <div class="text-3xl mb-2">🎮</div>
+                            <div class="text-2xl font-bold">${communityGames.length}</div>
+                            <div class="text-sm text-gray-300">Jogos de Vocês</div>
+                            <div class="text-xs text-yellow-300 mt-1">Aprovados</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Estatísticas Detalhadas -->
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-gray-800 p-4 rounded-lg text-center">
+                            <div class="text-xl mb-1">✅</div>
+                            <div class="text-lg font-bold text-green-400">${approvedGames}</div>
+                            <div class="text-xs text-gray-400">Jogos Aprovados</div>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-lg text-center">
+                            <div class="text-xl mb-1">❌</div>
+                            <div class="text-lg font-bold text-red-400">${rejectedGames}</div>
+                            <div class="text-xs text-gray-400">Jogos Rejeitados</div>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-lg text-center">
+                            <div class="text-xl mb-1">📊</div>
+                            <div class="text-lg font-bold text-blue-400">${approvalRate}%</div>
+                            <div class="text-xs text-gray-400">Taxa de Aprovação</div>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-lg text-center">
+                            <div class="text-xl mb-1">🎯</div>
+                            <div class="text-lg font-bold text-purple-400">${games.length}</div>
+                            <div class="text-xs text-gray-400">Jogos no Catálogo</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Atividade Recente -->
+                    <div class="mb-8">
+                        <h4 class="text-lg font-bold mb-4 text-cyan-400">📈 Atividade Recente</h4>
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <h5 class="font-bold text-cyan-300 mb-2">👥 Últimos Usuários</h5>
+                                    ${users.slice(-3).reverse().map(user => `
+                                        <div class="flex justify-between py-1">
+                                            <span>${user.name}</span>
+                                            <span class="text-gray-400">${new Date(user.createdAt).toLocaleDateString('pt-BR')}</span>
+                                        </div>
+                                    `).join('') || '<p class="text-gray-400">Nenhum usuário ainda</p>'}
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-cyan-300 mb-2">📤 Últimos Envios</h5>
+                                    ${submissions.slice(-3).reverse().map(game => `
+                                        <div class="flex justify-between py-1">
+                                            <span class="truncate">${game.name}</span>
+                                            <span class="text-gray-400 text-xs">${new Date(game.submittedAt).toLocaleDateString('pt-BR')}</span>
+                                        </div>
+                                    `).join('') || '<p class="text-gray-400">Nenhum jogo enviado ainda</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ferramentas de Administração -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-4 text-red-400">🔧 Ferramentas de Administração</h4>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <button onclick="window.adminSystem.backupData()" class="bg-green-600 hover:bg-green-700 p-4 rounded-lg transition-colors">
+                                <div class="text-2xl mb-2">💾</div>
+                                <div class="font-bold">Backup Completo</div>
+                                <div class="text-xs text-green-200">Exportar todos os dados</div>
+                            </button>
+                            <button onclick="window.adminSystem.generateReport()" class="bg-blue-600 hover:bg-blue-700 p-4 rounded-lg transition-colors">
+                                <div class="text-2xl mb-2">📋</div>
+                                <div class="font-bold">Relatório Detalhado</div>
+                                <div class="text-xs text-blue-200">Gerar relatório completo</div>
+                            </button>
+                            <button onclick="window.adminSystem.clearAllData()" class="bg-red-600 hover:bg-red-700 p-4 rounded-lg transition-colors">
+                                <div class="text-2xl mb-2">🗑️</div>
+                                <div class="font-bold">Limpar Dados</div>
+                                <div class="text-xs text-red-200">⚠️ Ação irreversível</div>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getStatusColor(status) {
+                switch(status) {
+                    case 'Aprovado': return 'bg-green-600';
+                    case 'Rejeitado': return 'bg-red-600';
+                    case 'Em Votação': return 'bg-blue-600';
+                    default: return 'bg-gray-600';
+                }
+            }
+
+            getVotingTimeLeft(endDate) {
+                if (!endDate) return 'N/A';
+                const now = new Date();
+                const end = new Date(endDate);
+                const diff = end - now;
+                
+                if (diff <= 0) return 'Expirada';
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                if (days > 0) return `${days}d ${hours}h`;
+                return `${hours}h`;
+            }
+
+            // Funções de ação
+            deleteSubmission(id) {
+                if (confirm('Tem certeza que deseja excluir esta submissão?')) {
+                    const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                    const filtered = submissions.filter(s => s.id !== id);
+                    localStorage.setItem('gameSubmissions', JSON.stringify(filtered));
+                    this.loadSubmissions();
+                    authSystem.showNotification('🗑️ Submissão excluída com sucesso!', 'success');
+                }
+            }
+
+            clearSubmissions() {
+                if (confirm('Tem certeza que deseja limpar todas as submissões?')) {
+                    localStorage.removeItem('gameSubmissions');
+                    this.loadSubmissions();
+                    authSystem.showNotification('🗑️ Todas as submissões foram removidas!', 'success');
+                }
+            }
+
+            showVideoModal(submissionId) {
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const submission = submissions.find(s => s.id == submissionId);
+                
+                if (!submission) return;
+                
+                document.getElementById('video-game-name').textContent = submission.name;
+                document.getElementById('video-url').value = '';
+                document.getElementById('video-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                // Configurar evento do botão criar votação
+                const createBtn = document.getElementById('create-voting');
+                createBtn.onclick = () => this.createVoting(submissionId);
+                
+                // Configurar eventos de fechar
+                document.getElementById('close-video-modal').onclick = () => this.closeVideoModal();
+                document.getElementById('cancel-video-modal').onclick = () => this.closeVideoModal();
+            }
+
+            closeVideoModal() {
+                document.getElementById('video-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+
+            createVoting(submissionId) {
+                const videoUrl = document.getElementById('video-url').value.trim();
+                
+                if (!videoUrl) {
+                    authSystem.showNotification('❌ Por favor, insira a URL do vídeo!', 'error');
+                    return;
+                }
+                
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const submission = submissions.find(s => s.id == submissionId);
+                
+                if (!submission) return;
+                
+                // Configurar votação
+                const votingEndDate = new Date();
+                votingEndDate.setDate(votingEndDate.getDate() + 7); // 7 dias
+                
+                submission.status = 'Em Votação';
+                submission.videoUrl = videoUrl;
+                submission.votingStartDate = new Date().toISOString();
+                submission.votingEndDate = votingEndDate.toISOString();
+                submission.votes = { approve: 0, reject: 0 };
+                submission.voters = []; // IDs dos usuários que já votaram
+                
+                localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                
+                this.closeVideoModal();
+                this.loadSubmissions();
+                gamePortal.renderVotingGames();
+                
+                authSystem.showNotification('🗳️ Votação criada com sucesso! Durará 7 dias.', 'success');
+            }
+
+            approveDirectly(id) {
+                if (confirm('Aprovar este jogo diretamente sem votação?')) {
+                    const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                    const submission = submissions.find(s => s.id == id);
+                    if (submission) {
+                        submission.status = 'Aprovado';
+                        submission.approvedAt = new Date().toISOString();
+                        
+                        // Adicionar aos jogos da comunidade
+                        this.addToCommunityGames(submission);
+                        
+                        localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                        this.loadSubmissions();
+                        gamePortal.renderCommunityGames();
+                        authSystem.showNotification('✅ Jogo aprovado e adicionado aos "Jogos de Vocês"!', 'success');
+                    }
+                }
+            }
+
+            rejectDirectly(id) {
+                if (confirm('Rejeitar este jogo diretamente?')) {
+                    const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                    const submission = submissions.find(s => s.id == id);
+                    if (submission) {
+                        submission.status = 'Rejeitado';
+                        submission.rejectedAt = new Date().toISOString();
+                        localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                        this.loadSubmissions();
+                        authSystem.showNotification('❌ Jogo rejeitado!', 'success');
+                    }
+                }
+            }
+
+            endVoting(submissionId, approve) {
+                const action = approve ? 'aprovar' : 'rejeitar';
+                if (confirm(`Finalizar votação e ${action} este jogo?`)) {
+                    const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                    const submission = submissions.find(s => s.id == submissionId);
+                    
+                    if (submission) {
+                        submission.status = approve ? 'Aprovado' : 'Rejeitado';
+                        submission.votingEndedAt = new Date().toISOString();
+                        submission.votingEndedBy = 'admin';
+                        
+                        if (approve) {
+                            this.addToCommunityGames(submission);
+                        }
+                        
+                        localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                        this.loadSubmissions();
+                        gamePortal.renderVotingGames();
+                        gamePortal.renderCommunityGames();
+                        
+                        authSystem.showNotification(`${approve ? '✅' : '❌'} Votação finalizada e jogo ${approve ? 'aprovado' : 'rejeitado'}!`, 'success');
+                    }
+                }
+            }
+
+            addToCommunityGames(submission) {
+                const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                
+                const communityGame = {
+                    id: submission.id,
+                    name: submission.name,
+                    description: submission.description,
+                    genre: submission.genre,
+                    platform: submission.platform,
+                    link: submission.link,
+                    developer: submission.developer,
+                    videoUrl: submission.videoUrl,
+                    votes: submission.votes || { approve: 0, reject: 0 },
+                    approvedAt: new Date().toISOString(),
+                    submittedAt: submission.submittedAt,
+                    hasCover: submission.hasCover || false,
+                    userId: submission.userId,
+                    userEmail: submission.userEmail,
+                    userName: submission.userName,
+                    social: submission.social
+                };
+                
+                // Verificar se já existe
+                if (!communityGames.find(g => g.id === submission.id)) {
+                    communityGames.push(communityGame);
+                    localStorage.setItem('communityGames', JSON.stringify(communityGames));
+                }
+            }
+
+            // Métodos antigos mantidos para compatibilidade
+            approveGame(id) {
+                this.approveDirectly(id);
+            }
+
+            rejectGame(id) {
+                this.rejectDirectly(id);
+            }
+
+            deleteUser(id) {
+                if (confirm('Tem certeza que deseja excluir este usuário?')) {
+                    const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                    const filtered = users.filter(u => u.id !== id);
+                    localStorage.setItem('portalIndieUsers', JSON.stringify(filtered));
+                    this.loadUsers();
+                    authSystem.showNotification('🗑️ Usuário excluído!', 'success');
+                }
+            }
+
+            removeFromNewsletter(email) {
+                if (confirm('Remover este e-mail da newsletter?')) {
+                    const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                    const filtered = subscribers.filter(e => e !== email);
+                    localStorage.setItem('newsletterSubscribers', JSON.stringify(filtered));
+                    this.loadNewsletter();
+                    authSystem.showNotification('📧 E-mail removido da newsletter!', 'success');
+                }
+            }
+
+            exportEmails() {
+                const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                const emailList = subscribers.join('\n');
+                
+                const blob = new Blob([emailList], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'newsletter-emails.txt';
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                authSystem.showNotification('📥 Lista de e-mails exportada!', 'success');
+            }
+
+            toggleFeatured(gameId) {
+                const game = games.find(g => g.id === gameId);
+                if (game) {
+                    game.featured = !game.featured;
+                    this.loadGamesManager();
+                    gamePortal.renderFeaturedGames();
+                    authSystem.showNotification(`${game.featured ? '⭐' : '☆'} ${game.name} ${game.featured ? 'adicionado aos' : 'removido dos'} destaques!`, 'success');
+                }
+            }
+
+            backupData() {
+                const data = {
+                    users: JSON.parse(localStorage.getItem('portalIndieUsers') || '[]'),
+                    subscribers: JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]'),
+                    submissions: JSON.parse(localStorage.getItem('gameSubmissions') || '[]'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `portal-indie-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                authSystem.showNotification('💾 Backup criado com sucesso!', 'success');
+            }
+
+            removeCommunityGame(gameId) {
+                if (confirm('Remover este jogo da seção "Jogos de Vocês"?')) {
+                    const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                    const filtered = communityGames.filter(g => g.id != gameId);
+                    localStorage.setItem('communityGames', JSON.stringify(filtered));
+                    this.loadVotingManager();
+                    gamePortal.renderCommunityGames();
+                    authSystem.showNotification('🗑️ Jogo removido da comunidade!', 'success');
+                }
+            }
+
+            generateReport() {
+                const users = JSON.parse(localStorage.getItem('portalIndieUsers') || '[]');
+                const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                
+                const report = {
+                    geradoEm: new Date().toLocaleString('pt-BR'),
+                    resumo: {
+                        usuariosCadastrados: users.length,
+                        inscritosNewsletter: subscribers.length,
+                        jogosEnviados: submissions.length,
+                        jogosAprovados: submissions.filter(s => s.status === 'Aprovado').length,
+                        jogosRejeitados: submissions.filter(s => s.status === 'Rejeitado').length,
+                        votacoesAtivas: submissions.filter(s => s.status === 'Em Votação').length,
+                        jogosComunidade: communityGames.length
+                    },
+                    usuarios: users.map(u => ({
+                        nome: u.name,
+                        email: u.email,
+                        newsletter: u.newsletterConsent ? 'Sim' : 'Não',
+                        cadastro: new Date(u.createdAt).toLocaleString('pt-BR'),
+                        ultimoLogin: u.lastLogin ? new Date(u.lastLogin).toLocaleString('pt-BR') : 'Nunca'
+                    })),
+                    jogosEnviados: submissions.map(s => ({
+                        nome: s.name,
+                        desenvolvedor: s.developer,
+                        genero: s.genre,
+                        plataforma: s.platform,
+                        status: s.status || 'Enviado',
+                        enviadoEm: new Date(s.submittedAt).toLocaleString('pt-BR'),
+                        usuario: s.userName,
+                        email: s.userEmail
+                    })),
+                    newsletter: subscribers
+                };
+                
+                const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `relatorio-portal-indie-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                authSystem.showNotification('📋 Relatório detalhado gerado com sucesso!', 'success');
+            }
+
+            clearAllData() {
+                if (confirm('⚠️ ATENÇÃO: Isso irá apagar TODOS os dados do site. Tem certeza?')) {
+                    if (confirm('Esta ação é IRREVERSÍVEL. Confirma mesmo?')) {
+                        localStorage.clear();
+                        authSystem.showNotification('🗑️ Todos os dados foram limpos!', 'success');
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                }
+            }
+        }
+
+        // ===========================================
+        // SISTEMA DE NAVEGAÇÃO E FUNCIONALIDADES
+        // ===========================================
+        class GamePortal {
+            constructor() {
+                this.currentFilter = 'all';
+                this.init();
+            }
+
+            init() {
+                this.renderFeaturedGames();
+                this.renderGamesGrid();
+                this.checkExpiredVotings(); // Verificar votações expiradas
+                this.renderVotingGames();
+                this.renderCommunityGames();
+                this.bindEvents();
+                
+                // Verificar votações expiradas a cada 5 minutos
+                setInterval(() => {
+                    this.checkExpiredVotings();
+                }, 5 * 60 * 1000);
+            }
+
+            checkExpiredVotings() {
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                let hasChanges = false;
+                
+                submissions.forEach(game => {
+                    if (game.status === 'Em Votação' && game.votingEndDate) {
+                        const now = new Date();
+                        const endDate = new Date(game.votingEndDate);
+                        
+                        if (now > endDate) {
+                            this.autoFinishExpiredVoting(game);
+                            hasChanges = true;
+                            console.log('⏰ Votação expirada finalizada automaticamente:', game.name);
+                        }
+                    }
+                });
+                
+                if (hasChanges) {
+                    localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                    this.renderVotingGames();
+                    this.renderCommunityGames();
+                    
+                    // Atualizar painel admin se estiver aberto
+                    if (window.adminSystem && authSystem.currentUser?.email === 'rodrigues.cr.luis@gmail.com') {
+                        window.adminSystem.loadSubmissions();
+                        window.adminSystem.loadVotingManager();
+                    }
+                }
+            }
+
+            bindEvents() {
+                // Menu mobile
+                document.getElementById('mobile-menu').addEventListener('click', this.toggleMobileMenu);
+                
+                // Navegação suave
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', this.smoothScroll);
+                });
+                
+                // Botões da hero section
+                document.getElementById('explore-btn').addEventListener('click', () => {
+                    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+                });
+                
+                document.getElementById('submit-btn').addEventListener('click', () => {
+                    document.getElementById('submit').scrollIntoView({ behavior: 'smooth' });
+                });
+                
+                // Filtros de jogos
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.filterGames(e.target.dataset.filter));
+                });
+                
+                // Jogo aleatório
+                document.getElementById('random-btn').addEventListener('click', () => this.showRandomGame());
+                
+                // Formulário de envio de jogos
+                document.getElementById('submit-form').addEventListener('submit', (e) => this.handleGameSubmit(e));
+                
+
+            }
+
+            toggleMobileMenu() {
+                const mobileNav = document.getElementById('mobile-nav');
+                mobileNav.classList.toggle('hidden');
+            }
+
+            smoothScroll(e) {
+                e.preventDefault();
+                const targetId = e.target.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // Fechar menu mobile se estiver aberto
+                        document.getElementById('mobile-nav').classList.add('hidden');
+                    }
+                }
+            }
+
+            renderFeaturedGames() {
+                const featuredGames = games.filter(game => game.featured).slice(0, 3);
+                const container = document.getElementById('featured-games');
+                
+                container.innerHTML = featuredGames.map(game => `
+                    <div class="bg-card-bg rounded-lg overflow-hidden hover-glow transition-all duration-300 border-2 border-gray-600 hover:border-neon-purple">
+                        <img src="${game.image}" alt="${game.name}" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold mb-2 retro-text">${game.name}</h4>
+                            <p class="text-gray-400 mb-4">${game.description}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neon-blue">👨‍💻 ${game.developer}</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm">❤️ ${game.votes}</span>
+                                    <a href="${game.link}" target="_blank" class="pixel-button px-3 py-1 rounded text-xs">
+                                        🎮 Jogar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderGamesGrid() {
+                const filteredGames = this.currentFilter === 'all' 
+                    ? games 
+                    : games.filter(game => game.genre === this.currentFilter);
+                
+                const container = document.getElementById('games-grid');
+                
+                container.innerHTML = filteredGames.map(game => `
+                    <div class="game-card rounded-lg overflow-hidden hover-glow transition-all duration-300 fade-in">
+                        <img src="${game.image}" alt="${game.name}" class="game-image">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold mb-2 retro-text">${game.name}</h4>
+                            <p class="text-gray-400 text-sm mb-3">${game.description}</p>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-neon-blue">👨‍💻 ${game.developer}</span>
+                                <span>❤️ ${game.votes}</span>
+                            </div>
+                            <div class="mt-3 flex items-center justify-between">
+                                <span class="text-xs bg-gray-700 px-2 py-1 rounded">${game.platform}</span>
+                                <a href="${game.link}" target="_blank" class="pixel-button px-3 py-1 rounded text-xs">
+                                    🎮 Jogar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            filterGames(filter) {
+                this.currentFilter = filter;
+                
+                // Atualizar botões
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.dataset.filter === filter) {
+                        btn.className = 'filter-btn bg-neon-purple px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors';
+                    } else {
+                        btn.className = 'filter-btn bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors';
+                    }
+                });
+                
+                this.renderGamesGrid();
+            }
+
+            showRandomGame() {
+                const randomGame = games[Math.floor(Math.random() * games.length)];
+                const container = document.getElementById('random-game');
+                
+                container.innerHTML = `
+                    <img src="${randomGame.image}" alt="${randomGame.name}" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h4 class="text-xl font-bold mb-2 retro-text neon-text">${randomGame.name}</h4>
+                    <p class="text-gray-300 mb-2">${randomGame.description}</p>
+                    <div class="text-sm text-gray-400 mb-4">
+                        <p>👨‍💻 ${randomGame.developer}</p>
+                        <p>💻 ${randomGame.platform}</p>
+                        <p>❤️ ${randomGame.votes} votos</p>
+                    </div>
+                    <a href="${randomGame.link}" target="_blank" class="pixel-button px-4 py-2 rounded font-bold inline-block">
+                        🎮 Jogar Agora
+                    </a>
+                `;
+                
+                container.classList.add('pulse');
+                setTimeout(() => container.classList.remove('pulse'), 1000);
+            }
+
+
+
+            handleGameSubmit(e) {
+                e.preventDefault();
+                
+                // Verificar se usuário está logado
+                if (!authSystem.currentUser) {
+                    authSystem.showNotification('❌ Você precisa estar logado para enviar um jogo!', 'error');
+                    authSystem.openAuthModal();
+                    return;
+                }
+                
+                // Validar campos obrigatórios
+                const name = document.getElementById('game-name').value.trim();
+                const description = document.getElementById('game-description').value.trim();
+                const genre = document.getElementById('game-genre').value;
+                const platform = document.getElementById('game-platform').value;
+                const link = document.getElementById('game-link').value.trim();
+                const developer = document.getElementById('developer-name').value.trim();
+                const publishConsent = document.getElementById('publish-consent').checked;
+                
+                if (!name || !description || !genre || !platform || !link || !developer || !publishConsent) {
+                    authSystem.showNotification('❌ Por favor, preencha todos os campos obrigatórios!', 'error');
+                    return;
+                }
+                
+                // Criar submissão
+                const submission = {
+                    id: Date.now(),
+                    name,
+                    description,
+                    genre,
+                    platform,
+                    link,
+                    developer,
+                    social: document.getElementById('social-media').value.trim(),
+                    hasCover: document.getElementById('game-cover').files.length > 0,
+                    userId: authSystem.currentUser.id,
+                    userEmail: authSystem.currentUser.email,
+                    userName: authSystem.currentUser.name,
+                    submittedAt: new Date().toISOString(),
+                    status: 'Enviado'
+                };
+                
+                // Salvar submissão
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                submissions.push(submission);
+                localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                
+                // Limpar formulário
+                document.getElementById('submit-form').reset();
+                this.removeCover();
+                
+                // Mostrar mensagem de sucesso
+                authSystem.showNotification('🎉 Jogo enviado com sucesso! Nossa equipe analisará em breve.', 'success');
+                
+                // Atualizar painel admin se estiver aberto
+                if (window.adminSystem && authSystem.currentUser.email === 'rodrigues.cr.luis@gmail.com') {
+                    window.adminSystem.loadSubmissions();
+                }
+                
+                console.log('📤 Novo jogo enviado:', submission.name, 'por', submission.userName);
+            }
+
+            renderVotingGames() {
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const votingGames = submissions.filter(s => s.status === 'Em Votação');
+                const container = document.getElementById('voting-games');
+                
+                if (votingGames.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <span class="text-6xl mb-4 block">🗳️</span>
+                            <h4 class="text-xl font-bold mb-2">Nenhuma votação ativa</h4>
+                            <p class="text-gray-400">Aguarde novos jogos serem colocados em votação!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = votingGames.map(game => `
+                    <div class="bg-card-bg rounded-lg overflow-hidden hover-glow transition-all duration-300 border-2 border-blue-600">
+                        <div class="relative">
+                            ${game.videoUrl ? `
+                                <div class="bg-gradient-to-br from-blue-600 to-purple-600 h-48 flex items-center justify-center">
+                                    <a href="${game.videoUrl}" target="_blank" class="text-white hover:text-blue-200 transition-colors">
+                                        <div class="text-center">
+                                            <div class="text-4xl mb-2">🎥</div>
+                                            <p class="text-sm">Assistir Vídeo</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            ` : `
+                                <div class="bg-gradient-to-br from-blue-600 to-purple-600 h-48 flex items-center justify-center">
+                                    <span class="text-4xl">🎮</span>
+                                </div>
+                            `}
+                            <div class="absolute top-2 right-2 bg-blue-600 px-2 py-1 rounded text-xs font-bold">
+                                🗳️ Votação
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold mb-2 retro-text">${game.name}</h4>
+                            <p class="text-gray-400 mb-4 text-sm">${game.description}</p>
+                            <div class="flex items-center justify-between text-sm mb-4">
+                                <span class="text-neon-blue">👨‍💻 ${game.developer}</span>
+                                <span class="text-gray-400">📅 ${this.getVotingTimeLeft(game.votingEndDate)}</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex space-x-4 text-sm">
+                                    <span class="text-green-400">✅ ${game.votes?.approve || 0}</span>
+                                    <span class="text-red-400">❌ ${game.votes?.reject || 0}</span>
+                                </div>
+                                <a href="${game.link}" target="_blank" class="text-neon-blue hover:underline text-sm">
+                                    🔗 Ver Jogo
+                                </a>
+                            </div>
+                            ${authSystem.currentUser ? `
+                                <div class="flex space-x-2">
+                                    <button onclick="gamePortal.vote('${game.id}', 'approve')" class="pixel-button flex-1 py-2 rounded text-sm font-bold bg-green-600 hover:bg-green-700">
+                                        ✅ Aprovar
+                                    </button>
+                                    <button onclick="gamePortal.vote('${game.id}', 'reject')" class="pixel-button flex-1 py-2 rounded text-sm font-bold bg-red-600 hover:bg-red-700">
+                                        ❌ Rejeitar
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="text-center">
+                                    <button onclick="authSystem.openAuthModal()" class="pixel-button px-4 py-2 rounded text-sm font-bold">
+                                        👤 Faça login para votar
+                                    </button>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderCommunityGames() {
+                const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                const container = document.getElementById('community-games-grid');
+                
+                if (communityGames.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <span class="text-6xl mb-4 block">🎮</span>
+                            <h4 class="text-xl font-bold mb-2">Nenhum jogo aprovado ainda</h4>
+                            <p class="text-gray-400">Os jogos aprovados pela comunidade aparecerão aqui!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = communityGames.reverse().map(game => `
+                    <div class="game-card rounded-lg overflow-hidden hover-glow transition-all duration-300 fade-in border-2 border-green-600">
+                        <div class="relative">
+                            ${game.videoUrl ? `
+                                <div class="bg-gradient-to-br from-green-600 to-blue-600 h-32 flex items-center justify-center">
+                                    <a href="${game.videoUrl}" target="_blank" class="text-white hover:text-green-200 transition-colors">
+                                        <div class="text-center">
+                                            <div class="text-2xl mb-1">🎥</div>
+                                            <p class="text-xs">Ver Vídeo</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            ` : `
+                                <div class="bg-gradient-to-br from-green-600 to-blue-600 h-32 flex items-center justify-center">
+                                    <span class="text-2xl">🎮</span>
+                                </div>
+                            `}
+                            <div class="absolute top-2 right-2 bg-green-600 px-2 py-1 rounded text-xs font-bold">
+                                ✅ Aprovado
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold mb-2 retro-text">${game.name}</h4>
+                            <p class="text-gray-400 text-sm mb-3">${game.description}</p>
+                            <div class="flex items-center justify-between text-xs mb-3">
+                                <span class="text-neon-blue">👨‍💻 ${game.developer}</span>
+                                <span class="text-green-400">✅ ${(game.votes?.approve || 0) + (game.votes?.reject || 0)} votos</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs bg-gray-700 px-2 py-1 rounded">${game.platform}</span>
+                                <a href="${game.link}" target="_blank" class="pixel-button px-3 py-1 rounded text-xs">
+                                    🎮 Jogar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            vote(gameId, voteType) {
+                if (!authSystem.currentUser) {
+                    authSystem.showNotification('❌ Você precisa estar logado para votar!', 'error');
+                    return;
+                }
+
+                const submissions = JSON.parse(localStorage.getItem('gameSubmissions') || '[]');
+                const game = submissions.find(s => s.id == gameId);
+                
+                if (!game || game.status !== 'Em Votação') {
+                    authSystem.showNotification('❌ Esta votação não está mais ativa!', 'error');
+                    return;
+                }
+
+                // Verificar se já votou
+                if (game.voters && game.voters.includes(authSystem.currentUser.id)) {
+                    authSystem.showNotification('❌ Você já votou neste jogo!', 'error');
+                    return;
+                }
+
+                // Verificar se a votação expirou
+                const now = new Date();
+                const endDate = new Date(game.votingEndDate);
+                if (now > endDate) {
+                    // Auto-finalizar votação expirada
+                    this.autoFinishExpiredVoting(game);
+                    authSystem.showNotification('❌ Esta votação já expirou e foi finalizada automaticamente!', 'error');
+                    return;
+                }
+
+                // Registrar voto
+                if (!game.votes) game.votes = { approve: 0, reject: 0 };
+                if (!game.voters) game.voters = [];
+
+                game.votes[voteType]++;
+                game.voters.push(authSystem.currentUser.id);
+
+                // Verificar se deve finalizar automaticamente (10+ votos e maioria clara)
+                const totalVotes = game.votes.approve + game.votes.reject;
+                if (totalVotes >= 10) {
+                    const approvePercentage = (game.votes.approve / totalVotes) * 100;
+                    if (approvePercentage >= 70) {
+                        // Aprovar automaticamente
+                        this.autoApproveGame(game);
+                        authSystem.showNotification(`🎉 Jogo "${game.name}" aprovado automaticamente pela comunidade!`, 'success');
+                    } else if (approvePercentage <= 30) {
+                        // Rejeitar automaticamente
+                        this.autoRejectGame(game);
+                        authSystem.showNotification(`❌ Jogo "${game.name}" rejeitado automaticamente pela comunidade.`, 'error');
+                    }
+                }
+
+                localStorage.setItem('gameSubmissions', JSON.stringify(submissions));
+                this.renderVotingGames();
+                this.renderCommunityGames();
+
+                const voteText = voteType === 'approve' ? 'aprovação' : 'rejeição';
+                authSystem.showNotification(`✅ Seu voto de ${voteText} foi registrado!`, 'success');
+                
+                // Atualizar painel admin se estiver aberto
+                if (window.adminSystem && authSystem.currentUser.email === 'rodrigues.cr.luis@gmail.com') {
+                    window.adminSystem.loadSubmissions();
+                    window.adminSystem.loadVotingManager();
+                }
+            }
+
+            autoFinishExpiredVoting(game) {
+                const totalVotes = (game.votes?.approve || 0) + (game.votes?.reject || 0);
+                const approvePercentage = totalVotes > 0 ? ((game.votes?.approve || 0) / totalVotes) * 100 : 0;
+                
+                if (approvePercentage >= 50) {
+                    this.autoApproveGame(game);
+                } else {
+                    this.autoRejectGame(game);
+                }
+            }
+
+            autoApproveGame(game) {
+                game.status = 'Aprovado';
+                game.approvedAt = new Date().toISOString();
+                game.autoApproved = true;
+                
+                // Adicionar aos jogos da comunidade
+                this.addGameToCommunity(game);
+                
+                console.log('✅ Jogo auto-aprovado:', game.name);
+            }
+
+            autoRejectGame(game) {
+                game.status = 'Rejeitado';
+                game.rejectedAt = new Date().toISOString();
+                game.autoRejected = true;
+                
+                console.log('❌ Jogo auto-rejeitado:', game.name);
+            }
+
+            addGameToCommunity(submission) {
+                const communityGames = JSON.parse(localStorage.getItem('communityGames') || '[]');
+                
+                // Verificar se já existe
+                if (communityGames.find(g => g.id === submission.id)) {
+                    return;
+                }
+                
+                const communityGame = {
+                    id: submission.id,
+                    name: submission.name,
+                    description: submission.description,
+                    genre: submission.genre,
+                    platform: submission.platform,
+                    link: submission.link,
+                    developer: submission.developer,
+                    videoUrl: submission.videoUrl,
+                    votes: submission.votes || { approve: 0, reject: 0 },
+                    approvedAt: new Date().toISOString(),
+                    submittedAt: submission.submittedAt,
+                    hasCover: submission.hasCover || false,
+                    userId: submission.userId,
+                    userEmail: submission.userEmail,
+                    userName: submission.userName,
+                    social: submission.social
+                };
+                
+                communityGames.push(communityGame);
+                localStorage.setItem('communityGames', JSON.stringify(communityGames));
+            }
+
+            getVotingTimeLeft(endDate) {
+                if (!endDate) return 'N/A';
+                const now = new Date();
+                const end = new Date(endDate);
+                const diff = end - now;
+                
+                if (diff <= 0) return 'Expirada';
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                if (days > 0) return `${days}d ${hours}h`;
+                return `${hours}h`;
+            }
+
+            handleCoverUpload(input) {
+                const file = input.files[0];
+                if (!file) return;
+
+                // Validar tipo de arquivo
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    authSystem.showNotification('❌ Formato inválido! Use apenas PNG, JPG ou GIF.', 'error');
+                    input.value = '';
+                    return;
+                }
+
+                // Validar tamanho (5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB em bytes
+                if (file.size > maxSize) {
+                    authSystem.showNotification('❌ Arquivo muito grande! Máximo 5MB.', 'error');
+                    input.value = '';
+                    return;
+                }
+
+                // Mostrar preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('cover-upload-area').classList.add('hidden');
+                    document.getElementById('cover-preview').classList.remove('hidden');
+                    document.getElementById('cover-image').src = e.target.result;
+                    document.getElementById('cover-filename').textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+
+                authSystem.showNotification('✅ Capa carregada com sucesso!', 'success');
+            }
+
+            removeCover() {
+                document.getElementById('game-cover').value = '';
+                document.getElementById('cover-upload-area').classList.remove('hidden');
+                document.getElementById('cover-preview').classList.add('hidden');
+                document.getElementById('cover-image').src = '';
+                document.getElementById('cover-filename').textContent = '';
+                
+                authSystem.showNotification('🗑️ Capa removida!', 'success');
+            }
+        }
+
+        // ===========================================
+        // INICIALIZAÇÃO DOS SISTEMAS
+        // ===========================================
+        let authSystem, newsletterSystem, gamePortal;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar todos os sistemas
+            authSystem = new AuthSystem();
+            newsletterSystem = new NewsletterSystem();
+            gamePortal = new GamePortal();
+            
+            console.log('🎮 Portal de Games Indie BR carregado com sucesso!');
+            console.log('🚀 Todos os sistemas funcionais: Login, Newsletter, Catálogo e Formulários');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'977d957061a2f204',t:'MTc1NjY1NDM3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
